@@ -29,7 +29,7 @@ generate_static_auto:
 ## Run the server
 run:
 #	./manage.py runserver 0.0.0.0:8000
-	gunicorn -b 0.0.0.0:8000 server.wsgi:application
+	gunicorn -b 0.0.0.0:8000 server.wsgi:application --log-level debug
 
 ## Create super user
 create_super_user:
