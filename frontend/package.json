@@ -22,6 +22,7 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "lint": "eslint src/main src/test",
+    "coverage": "npm run test -- --coverage --collectCoverageFrom=src/main/**/*.tsx",
     "lint_fix": "eslint src/main src/test --fix"
   },
   "eslintConfig": {
