@@ -12,6 +12,6 @@ jobs:
       - name: Check if the code is written badly or not
         run: docker exec backend make lint
       - name: Generate unit test coverage report of user created code while launching the unit test suite.
-        run: docker exec backend coverage_gen
+        run: docker exec backend make coverage_gen
       - name: Displays result
-        run: docker exec backend coverage_shell
+        run: docker exec backend make coverage_shell
