@@ -6,7 +6,7 @@ jobs:
   prepare:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@2
+      - uses: actions/checkout@v2
       - name: Build web app stack
         run: docker-compose up -d --build
       - name: Check if the code is written badly or not
