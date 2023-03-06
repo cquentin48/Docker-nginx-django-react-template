@@ -19,6 +19,8 @@ from tools.env_vars import load_env_var_list
 
 from tools.localisation import Localisation
 
+from tools.localisation import Localisation
+
 mimetypes.add_type("text/css",".css",True)
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.

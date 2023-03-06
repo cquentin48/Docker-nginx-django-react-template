@@ -1,0 +1,23 @@
+name: Backend service unit tests & linting
+
+on: push
+
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    steps:
+      - actions/checkout@2
+      - name: Build web app stack
+        run: docker-compose up -d --build
+  
+  unit_tests:
+    steps:
+      - name: Generate unit test coverage report of user created code while launching the unit test suite.
+        run: docker exec -it backend coverage_gen
+      - name: Displays result
+        run: docker exec -it backend coverage_shell
+
+  linter:
+    steps:
+      - name: Check if the code is written badly or not
+        run: docker exec -it backend make lint
