@@ -12,4 +12,4 @@ coverage_shell:
 
 ## Execute the linter
 lint:
-	pylint src/
+	pylint cli/
