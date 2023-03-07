@@ -5,14 +5,16 @@ on: [push, pull_request, workflow_call]
 jobs:
   build:
     runs-on: ubuntu-latest
-  steps:
-    - uses: actions/checkout@v2 
-    - uses: actions/setup-python@v4
-      with:
-        python-version: '3.10'
-    - name: Install make
-      run: apt update -y ; apt install make
-    - name: Check if the code is badly written or not
-      run: make lint
-    - name: Check the code coverage and display report while testing the code
-      run: make coverage_gen ; echo "\n" ; make coverage_shell
+    steps:
+      - uses: actions/checkout@v2 
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+      - name: Install make
+        run: sudo apt update -y ; sudo apt install make
+      - name: Move to cli project
+        run: cd ci/
+      - name: Check if the code is badly written or not
+        run: make lint
+      - name: Check the code coverage and display report while testing the code
+        run: make coverage_gen ; echo "\n" ; make coverage_shell
