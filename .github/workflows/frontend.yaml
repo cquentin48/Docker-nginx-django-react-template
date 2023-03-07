@@ -1,6 +1,6 @@
-name: Backend service unit tests & linting
+name: Frontend service unit tests & linting
 
-on: push
+on: [push, pull_request, workflow_call]
 
 jobs:
   frontend-ci:
