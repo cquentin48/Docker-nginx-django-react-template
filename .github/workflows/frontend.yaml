@@ -1,6 +1,6 @@
 name: Frontend service unit tests & linting
 
-on: [push, pull_request, workflow_call]
+on: [push]
 
 jobs:
   frontend-ci:

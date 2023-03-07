@@ -1,6 +1,6 @@
 name: Tag manager continuous integration
 
-on: [push, pull_request, workflow_call]
+on: [push]
 
 jobs:
   build:
@@ -12,9 +12,7 @@ jobs:
           python-version: '3.10'
       - name: Install make
         run: sudo apt update -y ; sudo apt install make
-      - name: Move to cli project
-        run: cd ci/
       - name: Check if the code is badly written or not
-        run: ls -l
+        run: cd ci ; make lint
       - name: Check the code coverage and display report while testing the code
-        run: make coverage_gen ; echo "\n" ; make coverage_shell
+        run: cd ci ;make coverage_gen ; echo "\n" ; make coverage_shell
