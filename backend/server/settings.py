@@ -13,9 +13,9 @@ import os
 
 from pathlib import Path
 
-from tools.localisation import Localisation
-
 import mimetypes
+
+from tools.localisation import Localisation
 
 mimetypes.add_type("text/css",".css",True)
 
