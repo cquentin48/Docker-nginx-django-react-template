@@ -35,7 +35,8 @@ DEBUG = True
 ALLOWED_HOSTS = [
     '0.0.0.0',
     '127.0.0.1',
-    'backend'
+    'backend',
+    'admin-backend'
 ]
 
 # Application definition
@@ -50,7 +51,8 @@ INSTALLED_APPS = [
     'data',
     'rest_framework',
     'drf_yasg',
-    'graphene_django'
+    'graphene_django',
+    'whitenoise'
 ]
 
 MIDDLEWARE = [
@@ -61,6 +63,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware'
 ]
 
 REST_FRAMEWORK = {
@@ -93,6 +96,8 @@ TEMPLATES = [
         },
     },
 ]
+
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 WSGI_APPLICATION = 'server.wsgi.application'
 
@@ -144,7 +149,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = '/staticfiles/'
 
 STATIC_ROOT = os.path.join(os.path.dirname(os.path.dirname(__file__)),STATIC_URL)
 
