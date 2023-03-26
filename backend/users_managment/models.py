@@ -10,7 +10,7 @@ class CustomUser(AbstractUser):
     Custom User model Class
     """
 
-    id = models.IntegerField(primary_key=True)
+    id = models.AutoField(primary_key=True)
 
     username = \
         models.TextField(

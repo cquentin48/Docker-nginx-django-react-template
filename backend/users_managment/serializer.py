@@ -46,13 +46,13 @@ class RegisterSerializer(serializers.ModelSerializer):
                 LOCALE.load_localised_text("SERIALIZER_REGISTRATION_DIFFERENT_PASSWORDS")
             )
 
-    def create(self, validated_data):
+    def create(self, validated_data)->CustomUser:
         user:CustomUser = CustomUser.objects.create(
             username=validated_data['username'],
             email=validated_data['email']
         )
 
         user.set_password(validated_data['password'])
-        user.save()
+        #user.save()
 
         return user

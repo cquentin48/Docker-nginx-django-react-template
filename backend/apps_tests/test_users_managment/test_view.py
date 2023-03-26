@@ -8,6 +8,10 @@ class TestView(SimpleTestCase):
 
     """
     def test_get_all_routes_returns_every_routes(self):
+        """When the user asks to see every routes
+        for managing a user, a list should be displayed
+        with a 200 response code
+        """
         # Given
         url = "auth_routes"
         expected_body_result = [
