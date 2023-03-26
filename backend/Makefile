@@ -37,7 +37,7 @@ create_super_user:
 
 ## Check lint
 lint:
-	pylint --load-plugins pylint_django --django-settings-module=server.settings apps_tests data server tools
+	pylint --load-plugins pylint_django --django-settings-module=server.settings apps_tests data server tools users_managment
 
 ## Run test suite:
 tests:

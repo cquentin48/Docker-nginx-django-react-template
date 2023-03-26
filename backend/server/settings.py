@@ -15,6 +15,8 @@ from pathlib import Path
 
 import mimetypes
 
+from datetime import timedelta
+
 from tools.localisation import Localisation
 
 mimetypes.add_type("text/css",".css",True)
@@ -52,7 +54,9 @@ INSTALLED_APPS = [
     'rest_framework',
     'drf_yasg',
     'graphene_django',
-    'whitenoise'
+    'whitenoise',
+    'rest_framework_simplejwt',
+    'users_managment'
 ]
 
 MIDDLEWARE = [
@@ -145,6 +149,8 @@ USE_I18N = True
 
 USE_TZ = True
 
+AUTH_USER_MODEL = 'users_managment.CustomUser'
+
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
@@ -159,3 +165,16 @@ MEDIA_URL = '/media/'
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+SIMPLE_JWT = {
+     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=10),
+     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
+     'ROTATE_REFRESH_TOKENS': True,
+     'BLACKLIST_AFTER_ROTATION': True
+}
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    )
+}

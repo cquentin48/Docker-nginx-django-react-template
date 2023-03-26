@@ -24,7 +24,6 @@ from drf_yasg import openapi
 
 from . import settings
 
-
 schema_view = get_schema_view( # pylint: disable=invalid-name
    openapi.Info(
       title="Snippets API",
@@ -38,7 +37,7 @@ schema_view = get_schema_view( # pylint: disable=invalid-name
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('auth/', include('users.urls')),
+    path('auth/', include('users_managment.urls')),
     re_path(r'^swagger(?P<format>\.json|\.yaml)$',
         schema_view.without_ui(cache_timeout=0), name='schema-json'),
     re_path(r'^swagger/$',

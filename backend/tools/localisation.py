@@ -8,12 +8,12 @@ class Localisation:
         """Init a localisation class
 
         Args:
-            language (str): _description_
+            language (str): language specified by the user
         """
         self._locale_prefix_file_path = "res/locale_"
         self.locale_dict = self.open_locale_file(language=language)
 
-    def open_locale_file(self, language: str):
+    def open_locale_file(self, language: str) -> dict[str]:
         """Opens the language file with contains
         locale string values
 
@@ -21,7 +21,7 @@ class Localisation:
             language (str): _description_
 
         Returns:
-            _type_: _description_
+            dict: localised infos
         """
         file_path = PROJECT_ROOT_FOLDER+self._locale_prefix_file_path+language+".yaml"
         with open(file_path,encoding="utf-8") as yaml_file:
@@ -38,4 +38,6 @@ class Localisation:
             str: Localised text or the text key if the
                 value is not set
         """
-        return self.locale_dict[text_id] if self.locale_dict[text_id] is not None else text_id
+        if text_id in self.locale_dict:
+            return self.locale_dict[text_id]
+        return text_id
