@@ -24,7 +24,6 @@ mimetypes.add_type("text/css",".css",True)
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
@@ -52,11 +51,15 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'data',
     'rest_framework',
+    'rest_framework.authtoken',
+    'dj_rest_auth',
     'drf_yasg',
     'graphene_django',
     'whitenoise',
-    'rest_framework_simplejwt',
-    'users_managment'
+    'allauth',
+    'allauth.account',
+    'core',
+    'core.user'
 ]
 
 MIDDLEWARE = [
@@ -67,7 +70,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware'
+    'whitenoise.middleware.WhiteNoiseMiddleware',
+    'corsheaders.middleware.CorsMiddleware'
 ]
 
 REST_FRAMEWORK = {
@@ -75,6 +79,10 @@ REST_FRAMEWORK = {
     # or allow read-only access for unauthenticated users.
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
+    ],
+    'DEFAULT_RENDERER_CLASSES': [
+        'rest_framework.renderers.JSONRenderer',
+        'rest_framework.renderers.BrowsableAPIRenderer',
     ]
 }
 
@@ -82,6 +90,14 @@ GRAPHENE = {
     "SCHEMA": "data.schema.schema"
 }
 
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+SITE_ID = 1
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_USERNAME_REQUIRED = False
+ACCOUNT_SESSION_REMEMBER = True
+ACCOUNT_AUTHENTICATION_METHOD = 'email'
+ACCOUNT_UNIQUE_EMAIL = True
 
 ROOT_URLCONF = 'server.urls'
 
@@ -149,9 +165,6 @@ USE_I18N = True
 
 USE_TZ = True
 
-AUTH_USER_MODEL = 'users_managment.CustomUser'
-
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
@@ -173,8 +186,19 @@ SIMPLE_JWT = {
      'BLACKLIST_AFTER_ROTATION': True
 }
 
+AUTHENTICATION_BACKENDS = (
+    "django.contrib.auth.backends.ModelBackend",
+    "allauth.account.auth_backends.AuthenticationBackend",
+)
+
 REST_FRAMEWORK = {
+    'DATETIME_FORMAT': "%m/%d/%Y %I:%M%P",
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
-    )
+        'rest_framework_simplejwt.authentication.JWTAuthentication', 
+    ),
+    'DEFAULT_RENDERER_CLASSES':{
+        'rest_framework.renderers.JSONRenderer'
+    }
 }
+
+AUTH_USER_MODEL = 'core_user.User'

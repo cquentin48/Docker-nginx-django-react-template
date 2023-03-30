@@ -3,7 +3,8 @@ from django.test import SimpleTestCase
 from rest_framework import serializers
 
 from users_managment.models import CustomUser
-from users_managment.serializer import RegisterSerializer
+
+from users_managment.auth.serializers import RegisterSerializer
 
 class TestTokenSerializer(SimpleTestCase):
     """User token serializer unit test

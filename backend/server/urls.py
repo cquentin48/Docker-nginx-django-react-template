@@ -37,14 +37,14 @@ schema_view = get_schema_view( # pylint: disable=invalid-name
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('auth/', include('users_managment.urls')),
     re_path(r'^swagger(?P<format>\.json|\.yaml)$',
         schema_view.without_ui(cache_timeout=0), name='schema-json'),
     re_path(r'^swagger/$',
         schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
     re_path(r'^redoc/$',
         schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
-    path('api/v1/data/',include('data.urls'))
+    path('api/v1/data/',include('data.urls')),
+    path('api/v1/user/',include(('core.routers','core'),namespace='core-api'))
 ]
 
 if settings.DEBUG:

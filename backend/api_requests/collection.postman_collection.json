@@ -1,0 +1,78 @@
+{
+	"info": {
+		"_postman_id": "68f762c8-afda-40e8-be9c-b64b883ccd80",
+		"name": "Backend-server",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Registration route",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"email\":\"{{email}}\",\n    \"password\":\"{{password}}\",\n    \"username\":\"{{username}}\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseURL}}/register/",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"register",
+						""
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseURL",
+			"value": "http://0.0.0.0:8000/api/v1/auth",
+			"type": "default"
+		},
+		{
+			"key": "email",
+			"value": "testmail@mail.com",
+			"type": "default"
+		},
+		{
+			"key": "password",
+			"value": "12345678",
+			"type": "default"
+		},
+		{
+			"key": "username",
+			"value": "My username!",
+			"type": "default"
+		}
+	]
+}
