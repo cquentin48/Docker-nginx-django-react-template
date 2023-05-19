@@ -148,6 +148,7 @@ SIMPLE_JWT = {
     'REFRESH_TOKEN_LIFETIME': timedelta(days=30)
 }
 
+
 # Internationalization
 # https://docs.djangoproject.com/en/4.1/topics/i18n/
 
