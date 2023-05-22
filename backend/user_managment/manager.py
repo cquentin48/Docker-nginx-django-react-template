@@ -8,7 +8,6 @@ from server.settings import LOCALE
 class UserManager(BaseUserManager):
     """User manager class
     """
-
     def validate_input(self, input_value, locale_key_error):
         """Validate the input passed in the method.
         If the input is null or empty, a ValueError is et

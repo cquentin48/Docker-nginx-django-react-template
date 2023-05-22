@@ -8,6 +8,11 @@ from server.settings import LOCALE
 
 User = get_user_model() # To check later for custom auth : https://stackoverflow.com/questions/28613102/last-login-field-is-not-updated-when-authenticating-using-tokenauthentication-in
 
+from server.settings import LOCALE
+
+
+User = get_user_model()
+
 class RegisterSerializer(serializers.ModelSerializer):
     """Serializer class for registration
     """
@@ -152,6 +157,8 @@ class UserProfileSerializer(serializers.ModelSerializer):
     """Serializer class for the profile view
     """
     class Meta:
+        """Meta subclass
+        """
         model = User
         fields = [
             'username',
