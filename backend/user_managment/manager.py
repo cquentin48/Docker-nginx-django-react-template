@@ -1,3 +1,4 @@
+from django.contrib.auth import get_user_model
 from django.contrib.auth.models import(
     BaseUserManager
 )
@@ -7,6 +8,7 @@ from server.settings import LOCALE
 class UserManager(BaseUserManager):
     """User manager class
     """
+
     def validate_input(self, input_value, locale_key_error):
         """Validate the input passed in the method.
         If the input is null or empty, a ValueError is et
@@ -23,14 +25,14 @@ class UserManager(BaseUserManager):
             message = LOCALE.load_localised_text(locale_key_error)
             raise ValueError(message)
 
-    def create_user(self, username, email, password=None):
+    def create_user(self, username: str, email: str, password: str=None):
         """
         Create a regular user for the database
 
         Args:
-            username (_type_): username entered by the user
-            email (_type_): email entered by the user
-            password (_type_, optional): Password entered by the user. Defaults to None.
+            username (str): username entered by the user
+            email (str): email entered by the user
+            password (str, optional): Password entered by the user. Defaults to None.
         
         Raises:
             ValueError: Either the username or the email is empty
@@ -40,10 +42,9 @@ class UserManager(BaseUserManager):
         """
         self.validate_input(username,"USER_REGISTER_USERNAME_IS_EMPTY")
         self.validate_input(email,"USER_REGISTER_EMAIL_IS_EMPTY")
-
         user = self.model(
             username=username,
-            email=self.normalize_email(email)
+            email=self.normalize_email(email),
         )
 
         user.set_password(password)
@@ -51,14 +52,14 @@ class UserManager(BaseUserManager):
 
         return user
 
-    def create_superuser(self, username, email, password):
+    def create_superuser(self, username: str, email: str, password: str):
         """Create a superuser for usages inside the admin
         panel
 
         Args:
-            username (_type_): username entered by the user
-            email (_type_): email entered by the user
-            password (_type_, optional): Password entered by the user. Defaults to None.
+            username (str): username entered by the user
+            email (str): email entered by the user
+            password (str, optional): Password entered by the user. Defaults to None.
 
         Returns:
             User: Created superuser
@@ -66,10 +67,9 @@ class UserManager(BaseUserManager):
         user = self.create_user(
             username=username,
             email=email,
-            password=password
+            password=password,
         )
         user.staff = True
         user.admin = True
-        user.is_active = True
         user.save(using=self._db)
         return user

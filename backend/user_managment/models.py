@@ -28,7 +28,7 @@ class User(AbstractBaseUser):
         unique=True
     )
 
-    is_active = models.BooleanField(default=False)
+    is_active = models.BooleanField(default=True)
     staff = models.BooleanField(default=False)
     admin = models.BooleanField(default=False)
 
@@ -96,6 +96,15 @@ class User(AbstractBaseUser):
             bool: True yes | False no
         """
         return self.staff
+    
+    @property
+    def is_user_active(self) -> bool:
+        """Check if user is an active account or not
+
+        Returns:
+            bool: True yes | False no
+        """
+        return self.is_active
 
     @property
     def is_admin(self) -> bool:
