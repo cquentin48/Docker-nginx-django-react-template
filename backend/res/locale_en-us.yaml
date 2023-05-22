@@ -7,3 +7,8 @@ USER_REGISTER_USERNAME_IS_EMPTY: "User username is empty!"
 USER_REGISTER_EMAIL_IS_EMPTY: "User email is empty!"
 USER_REGISTER_PASSWORD_IS_EMPTY: "User password is empty!"
 USER_OBJECT_EMAIL: "User email"
+USER_OBJECT_USERNAME: "Username"
+USER_OBJECT_PASSWORD: 'Password'
+USER_OBJECT_CONFIRM_PASSWORD: 'Confirm the password'
+USER_OBJECT_REGISTRATION_DATE: "Registration date"
+USER_REGISTER_USERNAME_ALREADY_TAKEN: "Username already exist!"

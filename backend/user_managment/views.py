@@ -1,8 +1,5 @@
-import json
-
 from django.core.handlers.wsgi import WSGIRequest
-from django.http import HttpResponse
-from django.shortcuts import render
+from django.http import JsonResponse
 
 # Create your views here.
 def format_http_prefix(is_secure: bool)-> str:
@@ -16,10 +13,10 @@ def format_http_prefix(is_secure: bool)-> str:
         str: http web protocol with security (https)
         or not (http)
     """
-    if(is_secure):
+    if is_secure :
         return "https://"
-    else:
-        return "http://"
+
+    return "http://"
 
 
 def user_managment_root_view(request:WSGIRequest):
@@ -36,15 +33,14 @@ def user_managment_root_view(request:WSGIRequest):
     base_url = format_http_prefix(request.is_secure())+\
                request.get_host()+\
                "/api/v1/user/"
-    
+
     urls_index_array = {
         'register':base_url+"register",
         'auth':base_url+"auth",
         'refresh_token':base_url+"auth/refresh"
     }
-    return HttpResponse(
-        json.dumps(
-            urls_index_array
-        ),
-        content_type="application/json"
+    # Will be replaced by rest_framework view later
+    return JsonResponse(
+        data=urls_index_array,
+        status=200
     )
