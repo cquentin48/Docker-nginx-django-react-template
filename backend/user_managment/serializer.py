@@ -1,11 +1,12 @@
 from django.contrib.auth import get_user_model
 
 from rest_framework import serializers
+from rest_framework.exceptions import PermissionDenied
 
 from server.settings import LOCALE
 
 
-User = get_user_model()
+User = get_user_model() # To check later for custom auth : https://stackoverflow.com/questions/28613102/last-login-field-is-not-updated-when-authenticating-using-tokenauthentication-in
 
 class RegisterSerializer(serializers.ModelSerializer):
     """Serializer class for registration
@@ -38,8 +39,8 @@ class RegisterSerializer(serializers.ModelSerializer):
         """Check a string input validation
 
         Args:
-            input_value (str): _description_
-            label_error (str): _description_
+            input_value (str): input entered by the user
+            label_error (str): key label error in the locale file
 
         Raises:
             serializers.ValidationError: The value is empty
@@ -60,7 +61,7 @@ class RegisterSerializer(serializers.ModelSerializer):
         """
         user = User.objects.filter(email=email)
         try:
-            if user is not None:
+            if len(user) != 0:
                 raise User.AlreadyExist(
                     LOCALE.load_localised_text("USER_REGISTER_EMAIL_ALREADY_TAKEN")
                 )
@@ -78,7 +79,7 @@ class RegisterSerializer(serializers.ModelSerializer):
         """
         user = User.objects.filter(username=username)
         try:
-            if user is not None:
+            if len(user) != 0:
                 raise User.AlreadyExist(
                     LOCALE.load_localised_text("USER_REGISTER_USERNAME_ALREADY_TAKEN")
                 )
@@ -124,10 +125,19 @@ class RegisterSerializer(serializers.ModelSerializer):
             email=validated_data['email']
         )
         user.is_active = True
-        user.save()
         user.set_password(validated_data['password'])
         user.save()
         return user
+
+class ProfileSerializer(serializers.ModelSerializer):
+    @classmethod
+    def get(self,username: str,user:User):
+        if username != user.username:
+                raise PermissionDenied(
+                    LOCALE.load_localised_text("USER_REGISTER_EMAIL_ALREADY_TAKEN")
+                )
+        else:
+            return user
 
 class UserSerializer(serializers.ModelSerializer):
     """Serializer class for the user response
@@ -137,3 +147,32 @@ class UserSerializer(serializers.ModelSerializer):
         """
         model = User
         fields = ['username','email']
+
+class UserProfileSerializer(serializers.ModelSerializer):
+    """Serializer class for the profile view
+    """
+    class Meta:
+        model = User
+        fields = [
+            'username',
+            'email',
+            'registration_date',
+            'last_login',
+            'is_currently_logged_in'
+        ]
+
+class UserStaffProfileSerializer(serializers.ModelSerializer):
+    """Serializer class for the profile view
+    """
+    class Meta:
+        model = User
+        fields = [
+            'username',
+            'email',
+            'is_active',
+            'staff',
+            'admin',
+            'registration_date',
+            'last_login',
+            'is_currently_logged_in'
+        ]

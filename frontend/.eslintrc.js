@@ -5,7 +5,8 @@ module.exports = {
   },
   extends: [
     'plugin:react/recommended',
-    'standard-with-typescript'
+    'standard-with-typescript',
+    "prettier"
   ],
   ignorePatterns:[
     "setupTests.ts",
@@ -21,12 +22,33 @@ module.exports = {
     project: ["tsconfig.json"]
   },
   plugins: [
-    'react'
+    'react',
   ],
   rules: {
     '@typescript-eslint/quotes':'off',
-    '@typescript-eslint/semi':'off',
     "@typescript-eslint/explicit-function-return-type": "off"
+    '@typescript-eslint/semi':'off',
+    '@typescript-eslint/no-extraneous-class':'off',
+    '@typescript-eslint/no-misused-promises':'off',
+    "@typescript-eslint/ban-types": [
+      "error",
+      {
+        "extendDefaults": true,
+        "types": {
+          "{}": false
+        }
+      }
+    ],
+    "@typescript-eslint/indent": [
+      "error",
+      2,
+      {
+        "SwitchCase": 1
+      }
+    ],
+    indent: ['error', 2, {
+      ignoredNodes: ['ArrowFunctionExpression']
+    }]
   },
   settings: {
     react: {

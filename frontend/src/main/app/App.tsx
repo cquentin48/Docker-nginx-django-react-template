@@ -1,27 +1,35 @@
 import React from "react";
-import logo from "../res/gfx/logo.svg";
+import TopBar from "./components/header/topBar";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import "../res/css/App.css";
-import Router from "./router/Router";
+import UserFactory from "./model/user/userFactory";
 
-class App extends React.Component {
-  render (): React.ReactNode {
+interface AppState {
+  isConnected: boolean; // will be replaced later by redux or a token
+}
+
+class App extends React.Component<{}, AppState> {
+  constructor(props: {}) {
+    super(props);
+    this.state = {
+      isConnected: false,
+    };
+  }
+
+  render(): JSX.Element {
+    const state = this.state;
     return (
       <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" id="appLogo" />
-          <p>
-            Edit <code>src/App.tsx</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </header>
-        <Router/>
+        <TopBar
+          isConnected={state.isConnected}
+          handleLoginAction={UserFactory.authenticate}
+        />
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<p>Bonjour!</p>} />
+            <Route path="/test" element={<p>Element de test!</p>} />
+          </Routes>
+        </BrowserRouter>
       </div>
     );
   }

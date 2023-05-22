@@ -1,9 +1,13 @@
 from rest_framework import serializers
 from rest_framework import generics, status
+from rest_framework.exceptions import PermissionDenied
 from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
+
+from user_managment.views import format_http_prefix
 
 from .models import User
-from .serializer import RegisterSerializer, UserSerializer
+from .serializer import ProfileSerializer, RegisterSerializer, UserProfileSerializer, UserSerializer, UserStaffProfileSerializer
 
 class RegisterAPI(generics.GenericAPIView):
     """API View for registering a user
@@ -54,3 +58,39 @@ class RegisterAPI(generics.GenericAPIView):
                 },
                 status=error.status_code,
             )
+
+class ProfileViewAPI(generics.GenericAPIView):
+    serializer_class = UserProfileSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get(self,request, *args, **kwargs)->Response:
+        user = request.user
+        username_entered = kwargs['username']
+        try:
+            user = ProfileSerializer.get(username_entered,user)
+            if user.is_admin or user.is_staff:
+                profile = UserStaffProfileSerializer(
+                    user,
+                    context=self.get_serializer_context()).data
+            else:
+                profile = UserProfileSerializer(
+                    user,
+                    context=self.get_serializer_context()).data
+            prefix_path = format_http_prefix(request.is_secure())+\
+               request.get_host()+\
+               "/api/v1/user/"+username_entered+"/"
+            response_object = {
+                "user":profile,
+                "url_managment_list":{
+                    "delete":prefix_path+"delete",
+                    "update":prefix_path+"update",
+                    "profile":prefix_path+"profile"
+                }
+            }
+            return Response(
+                response_object
+            ,status=status.HTTP_200_OK)
+        except PermissionDenied as exception:
+            return Response({
+                "message":str(exception)
+            },status=exception.status_code)

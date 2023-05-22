@@ -29,6 +29,10 @@ class User(AbstractBaseUser):
     )
 
     is_active = models.BooleanField(default=True)
+    is_currently_logged_in = models.BooleanField(
+        default=False,
+        verbose_name=LOCALE.load_localised_text("USER_OBJECT_IS_CURRENTLY_LOGGED_IN")
+    )
     staff = models.BooleanField(default=False)
     admin = models.BooleanField(default=False)
 
