@@ -12,11 +12,12 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 import os
 
 from pathlib import Path
+
+import mimetypes
+
 from tools.env_vars import load_env_var_list
 
 from tools.localisation import Localisation
-
-import mimetypes
 
 mimetypes.add_type("text/css",".css",True)
 
@@ -112,11 +113,12 @@ WSGI_APPLICATION = 'server.wsgi.application'
 
 DATABASES = {
     'default': {
-        'HOST':os.environ.get("DB_HOST","locahost"),
+        'HOST':os.environ.get("DB_HOST","localhost"),
         'PORT':os.environ.get("DB_PORT","5432"),
+        'NAME':os.environ.get("DB_NAME","backend_db"),
         'ENGINE':os.environ.get("DB_ENGINE","django.db.backends.postgresql"),
-        'USER':os.environ.get("DB_USER","test"),
-        'PASSWORD':os.environ.get("DB_PASSWORD","test"),
+        'USER':os.environ.get("DB_USER","backend"),
+        'PASSWORD':os.environ.get("DB_PASSWORD","Quen7tin."),
     }
 }
 
