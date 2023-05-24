@@ -25,10 +25,12 @@ services:
       context: backend
       dockerfile: ./Dockerfile
     command: "make run"
+    env_file:
+      - .env
     networks:
       - app_network
     volumes:
-      - staticfiles:/app/static/
+      - staticfiles:/app/staticfiles/
     
   database:
     container_name: database

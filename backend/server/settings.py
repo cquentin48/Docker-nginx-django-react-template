@@ -13,9 +13,11 @@ import os
 
 from pathlib import Path
 
-from tools.localisation import Localisation
-
 import mimetypes
+
+from tools.env_vars import load_env_var_list
+
+from tools.localisation import Localisation
 
 mimetypes.add_type("text/css",".css",True)
 
@@ -27,17 +29,21 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-4y+$6b7z!!@%bv^+k$p$#7ws9tjkg=duh0(oimu9&-js*j+771'
+SECRET_KEY = os.environ.get("SECRET_KEY","my_secret_production_key")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = bool(os.environ.get("DEBUG",1))
 
+ALLOWED_HOSTS = load_env_var_list("ALLOWED_HOSTS",'["0.0.0.0","127.0.0.1"]')
+
+"""
 ALLOWED_HOSTS = [
     '0.0.0.0',
     '127.0.0.1',
     'backend',
     'admin-backend'
 ]
+"""
 
 # Application definition
 
@@ -107,8 +113,12 @@ WSGI_APPLICATION = 'server.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'HOST':os.environ.get("DB_HOST","localhost"),
+        'PORT':os.environ.get("DB_PORT","5432"),
+        'NAME':os.environ.get("DB_NAME","backend_db"),
+        'ENGINE':os.environ.get("DB_ENGINE","django.db.backends.postgresql"),
+        'USER':os.environ.get("DB_USER","backend"),
+        'PASSWORD':os.environ.get("DB_PASSWORD","Quen7tin."),
     }
 }
 
