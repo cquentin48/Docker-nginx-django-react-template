@@ -13,7 +13,9 @@ services:
     environment:
       - PUBLIC_URL=127.0.0.1
     networks:
-      - app_network
+      app_network:
+    env_file:
+      - .env
     volumes:
       - staticfiles:/staticfiles
 
@@ -24,9 +26,12 @@ services:
     build:
       context: backend
       dockerfile: ./Dockerfile
-    command: "make run"
+    links:
+      - database
     env_file:
       - .env
+    depends_on:
+      - database
     networks:
       - app_network
     volumes:
@@ -35,13 +40,26 @@ services:
   database:
     container_name: database
     image: postgres:latest
+    build:
+      context: ./postgres/
+      dockerfile: ./Dockerfile
+    ports:
+      - "5432:5432"
     restart: always
     volumes:
-      - postgres_data:/var/lib/postgresql/data/
+      - postgres_data/:/var/lib/postgresql/data
     environment:
-      - "POSTGRES_HOST_AUTH_METHOD=trust"
+      - POSTGRES_DB=backend_db
+      - POSTGRES_USER=backend_website
+      - POSTGRES_PASSWORD=Quen7tin.
     networks:
       - app_network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready", "-d","db_prod"]
+      interval: 30s
+      timeout: 60s
+      retries: 5
+      start_period: 80s
 
 volumes:
   postgres_data:

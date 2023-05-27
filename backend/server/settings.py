@@ -36,15 +36,6 @@ DEBUG = bool(os.environ.get("DEBUG",1))
 
 ALLOWED_HOSTS = load_env_var_list("ALLOWED_HOSTS",'["0.0.0.0","127.0.0.1"]')
 
-"""
-ALLOWED_HOSTS = [
-    '0.0.0.0',
-    '127.0.0.1',
-    'backend',
-    'admin-backend'
-]
-"""
-
 # Application definition
 
 INSTALLED_APPS = [
@@ -56,6 +47,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'data',
     'rest_framework',
+    'rest_framework_simplejwt',
     'drf_yasg',
     'graphene_django',
     'whitenoise'
@@ -113,12 +105,12 @@ WSGI_APPLICATION = 'server.wsgi.application'
 
 DATABASES = {
     'default': {
-        'HOST':os.environ.get("DB_HOST","localhost"),
-        'PORT':os.environ.get("DB_PORT","5432"),
-        'NAME':os.environ.get("DB_NAME","backend_db"),
-        'ENGINE':os.environ.get("DB_ENGINE","django.db.backends.postgresql"),
-        'USER':os.environ.get("DB_USER","backend"),
-        'PASSWORD':os.environ.get("DB_PASSWORD","Quen7tin."),
+        'HOST':os.environ.get("POSTGRES_HOST","localhost"),
+        'PORT':os.environ.get("POSTGRES_PORT","5432"),
+        'NAME':os.environ.get("POSTGRES_NAME","backend_db"),
+        'ENGINE':os.environ.get("POSTGRES_ENGINE","django.db.backends.postgresql"),
+        'USER':os.environ.get("POSTGRES_USER","backend"),
+        'PASSWORD':os.environ.get("POSTGRES_PASSWORD","Quen7tin."),
     }
 }
 
