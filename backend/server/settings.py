@@ -37,6 +37,8 @@ DEBUG = bool(os.environ.get("DEBUG",1))
 
 ALLOWED_HOSTS = load_env_var_list("ALLOWED_HOSTS",'["0.0.0.0","127.0.0.1"]')
 
+CORS_ALLOWED_ORIGINS = load_env_var_list("CORS_ALLOWED_ORIGINS",'["http://0.0.0.0:3000"')
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -58,6 +60,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
