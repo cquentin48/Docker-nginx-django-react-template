@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   nginx:
-    container_name: app_server_conf
+    container_name: frontend
     build:
       context: ./
       dockerfile: ./Dockerfile
@@ -10,10 +10,10 @@ services:
       - "80:80"
     depends_on:
       - backend
-    environment:
-      - PUBLIC_URL=127.0.0.1
     networks:
-      - app_network
+      app_network:
+    env_file:
+      - .env
     volumes:
       - staticfiles:/staticfiles
 
@@ -24,24 +24,36 @@ services:
     build:
       context: backend
       dockerfile: ./Dockerfile
-    command: "make run"
-    env_file:
-      - .env
+    links:
+      - database
+    depends_on:
+      - database
     networks:
       - app_network
+    env_file:
+      - .env
     volumes:
       - staticfiles:/app/staticfiles/
     
   database:
     container_name: database
     image: postgres:latest
+    command: postgres
+    ports:
+      - "5432:5432"
     restart: always
     volumes:
-      - postgres_data:/var/lib/postgresql/data/
-    environment:
-      - "POSTGRES_HOST_AUTH_METHOD=trust"
+      - ./postgres_data/:/var/lib/postgresql/data
     networks:
       - app_network
+    env_file:
+      - .env
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready", "-d","db_prod"]
+      interval: 30s
+      timeout: 60s
+      retries: 5
+      start_period: 80s
 
 volumes:
   postgres_data:

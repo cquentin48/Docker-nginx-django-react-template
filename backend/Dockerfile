@@ -19,10 +19,12 @@ COPY ./ /app
 
 EXPOSE 8000
 
+RUN apt-get update && apt-get install -y netcat
+
 RUN make install
 
 COPY entrypoint.sh /app
 
-RUN chmod +x entrypoint.sh
+RUN chmod +x /app/entrypoint.sh
 
-CMD [ "make", "run" ]
+CMD [ "/app/entrypoint.sh" ]
