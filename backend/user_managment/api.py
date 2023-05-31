@@ -1,13 +1,16 @@
 from rest_framework import serializers
 from rest_framework import generics, status
-from rest_framework.exceptions import PermissionDenied
+from rest_framework.exceptions import NotFound, PermissionDenied
 from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import AllowAny, IsAuthenticated
+
+from rest_framework_simplejwt.tokens import RefreshToken
 
 from user_managment.views import format_http_prefix
 
 from .models import User
-from .serializer import ProfileSerializer, RegisterSerializer, UserProfileSerializer, UserSerializer, UserStaffProfileSerializer
+from .serializer import ProfileSerializer, RegisterSerializer,\
+UserProfileSerializer, UserSerializer, UserStaffProfileSerializer
 
 class RegisterAPI(generics.GenericAPIView):
     """API View for registering a user
@@ -60,10 +63,20 @@ class RegisterAPI(generics.GenericAPIView):
             )
 
 class ProfileViewAPI(generics.GenericAPIView):
+    """Profile view API
+    """
     serializer_class = UserProfileSerializer
     permission_classes = [IsAuthenticated]
 
-    def get(self,request, *args, **kwargs)->Response:
+    def get(self,request, *_, **kwargs)->Response:
+        """Get method for this route
+
+        Args:
+            request (_type_): _description_
+
+        Returns:
+            Response: _description_
+        """
         user = request.user
         username_entered = kwargs['username']
         try:

@@ -3,33 +3,85 @@ import TopBar from "./components/header/topBar";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import "../res/css/App.css";
 import UserFactory from "./model/user/userFactory";
+import type User from "./model/user/user";
+import { useSelector } from "react-redux";
+import { SnackbarProvider, type VariantType, enqueueSnackbar } from "notistack";
+import type FunctionReturnType from "./store/reducers/interface";
+import WebAPPRouter from "./pages/router";
 
 interface AppState {
-  isConnected: boolean; // will be replaced later by redux or a token
+  user?: User;
+  message?: {
+    text: string;
+    severity: VariantType;
+  };
 }
 
 class App extends React.Component<{}, AppState> {
   constructor(props: {}) {
     super(props);
     this.state = {
-      isConnected: false,
+      user:undefined,
+      message: {
+        text: "",
+        severity: "default"
+      }
     };
+
+    this.updateUser = this.updateUser.bind(this);
+  }
+
+  componentDidMount(): void {
+    const user = useSelector((state:FunctionReturnType)=>
+      state.user
+    )
+    const message = useSelector((state:FunctionReturnType)=>
+      state.message
+    )
+    this.setState({
+      user,
+      message
+    })
+  }
+
+  componentDidUpdate(prevProps: Readonly<AppState>): void {
+    const currentState = this.state;
+    if(prevProps.message !== currentState.message &&
+        this.state.message?.text !== "" && currentState.message?.severity !== "default"){
+      enqueueSnackbar(currentState.message?.text, {
+        action:currentState.message?.severity,
+      })
+      this.setState({
+        message:{
+          text:"",
+          severity:"default"
+        }
+      })
+    }
+  }
+
+  /**
+   * Set the user in the frontend
+   * @param user Authentified user
+   */
+  updateUser(user: User): void {
+    this.setState({
+      user,
+    });
   }
 
   render(): JSX.Element {
     const state = this.state;
     return (
       <div className="App">
-        <TopBar
-          isConnected={state.isConnected}
-          handleLoginAction={UserFactory.authenticate}
-        />
-        <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<p>Bonjour!</p>} />
-            <Route path="/test" element={<p>Element de test!</p>} />
-          </Routes>
-        </BrowserRouter>
+        <SnackbarProvider maxSnack={4}>
+          <TopBar
+            isConnected={state.user !== undefined}
+            handleLoginAction={UserFactory.authenticate}
+            handleUpdateAction={this.updateUser}
+          />
+        <WebAPPRouter/>
+        </SnackbarProvider>
       </div>
     );
   }

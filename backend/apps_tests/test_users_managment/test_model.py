@@ -3,6 +3,8 @@ from django.test import TestCase
 from user_managment.models import User
 
 class ModelTest(TestCase):
+    """Model unit test class
+    """
 
     def test_create_user(self):
         """Check if a user can be created or not

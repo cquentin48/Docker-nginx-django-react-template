@@ -5,12 +5,6 @@ from rest_framework.exceptions import PermissionDenied
 
 from server.settings import LOCALE
 
-
-User = get_user_model() # To check later for custom auth : https://stackoverflow.com/questions/28613102/last-login-field-is-not-updated-when-authenticating-using-tokenauthentication-in
-
-from server.settings import LOCALE
-
-
 User = get_user_model()
 
 class RegisterSerializer(serializers.ModelSerializer):
@@ -30,12 +24,16 @@ class RegisterSerializer(serializers.ModelSerializer):
         required=True,
         label = LOCALE.load_localised_text("USER_OBJECT_PASSWORD")
     )
+    avatar_image = serializers.FileField(
+        required = False,
+        label = LOCALE.load_localised_text("USER_OBJECT_AVATAR_IMAGE")
+    )
 
     class Meta:
         """Meta class for the registration act
         """
         model = User
-        fields = ('id','username','password','email')
+        fields = ('id','username','password','email','avatar_image')
         extra_kwargs = {
             'password':{'write_only':True}
         }
@@ -135,14 +133,29 @@ class RegisterSerializer(serializers.ModelSerializer):
         return user
 
 class ProfileSerializer(serializers.ModelSerializer):
+    """Profile route class serializer
+    """
     @classmethod
-    def get(self,username: str,user:User):
+    def get(cls, username: str, user:User):
+        """GET Method for the profile informations fetch
+
+        Args:
+            username (str): username entered by the user
+            in the url route
+            user (User): current logged-in user
+
+        Raises:
+            PermissionDenied: If the user hasn't been logged
+            and tries to access the profile of another user
+
+        Returns:
+            _type_: _description_
+        """
         if username != user.username:
-                raise PermissionDenied(
-                    LOCALE.load_localised_text("USER_REGISTER_EMAIL_ALREADY_TAKEN")
-                )
-        else:
-            return user
+            raise PermissionDenied(
+                LOCALE.load_localised_text("USER_REGISTER_EMAIL_ALREADY_TAKEN")
+            )
+        return user
 
 class UserSerializer(serializers.ModelSerializer):
     """Serializer class for the user response
@@ -183,3 +196,16 @@ class UserStaffProfileSerializer(serializers.ModelSerializer):
             'last_login',
             'is_currently_logged_in'
         ]
+
+#pylint: disable=abstract-method
+class UserManagmentTokenObtainPairSerializer(serializers.Serializer):
+    """Serializer class for login
+
+    Args:
+        serializers (_type_): _description_
+    """
+    username = serializers.CharField(required=True)
+    password = serializers.CharField(required=True)
+
+    def validate(self, attrs):
+        return super().validate(attrs)

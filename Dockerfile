@@ -20,6 +20,10 @@ COPY --from=builder /app /home/app
 
 WORKDIR /usr/share/nginx/html
 
+RUN mkdir /usr/share/nginx/html/static/locale
+
+COPY --from=builder /app/src/main/res/locale /usr/share/nginx/html/static/locale
+
 EXPOSE 80
 
 COPY --from=builder /app/build /usr/share/nginx/html

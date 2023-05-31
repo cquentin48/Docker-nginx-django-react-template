@@ -28,6 +28,13 @@ class User(AbstractBaseUser):
         unique=True
     )
 
+    avatar_image = models.FileField(
+        verbose_name=LOCALE.load_localised_text("USER_OBJECT_AVATAR_IMAGE"),
+        upload_to='user',
+        null=True,
+        blank=True
+    )
+
     is_active = models.BooleanField(default=True)
     is_currently_logged_in = models.BooleanField(
         default=False,
@@ -36,7 +43,7 @@ class User(AbstractBaseUser):
     staff = models.BooleanField(default=False)
     admin = models.BooleanField(default=False)
 
-    registration_date = models.DateField(
+    registration_date = models.DateTimeField(
         verbose_name=LOCALE.load_localised_text("USER_OBJECT_REGISTRATION_DATE"),
         default=date.today
     )
@@ -100,7 +107,7 @@ class User(AbstractBaseUser):
             bool: True yes | False no
         """
         return self.staff
-    
+
     @property
     def is_user_active(self) -> bool:
         """Check if user is an active account or not

@@ -1,16 +1,15 @@
+import { Menu, MenuItem } from "@mui/material";
 import React from "react";
 
-import { Menu, MenuItem } from "@mui/material";
-
-interface TopBarMenuDialogProps {
+interface TopBarMenuConnectedDialogProps {
   anchorEl: HTMLElement | null;
   handleClose: () => void;
   openedMenu: boolean;
   openDialog: () => void;
 }
 
-export default function TopBarMenuDialog(
-  props: TopBarMenuDialogProps
+export default function TopBarMenuConnectedDialog(
+  props: TopBarMenuConnectedDialogProps
 ): JSX.Element {
   return (
     <Menu
@@ -22,9 +21,8 @@ export default function TopBarMenuDialog(
         "aria-labelledby": "menu-login-button",
       }}
     >
-      <MenuItem onClick={props.openDialog}>Login</MenuItem>
-      <MenuItem onClick={props.openDialog}>Password Lost?</MenuItem>
-      <MenuItem onClick={props.openDialog}>Username Lost?</MenuItem>
+      <MenuItem onClick={props.openDialog}>My Profile</MenuItem>
+      <MenuItem onClick={props.openDialog}>Signout</MenuItem>
     </Menu>
   );
 }

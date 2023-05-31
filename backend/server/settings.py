@@ -20,6 +20,11 @@ from tools.env_vars import load_env_var_list
 
 from tools.localisation import Localisation
 
+import django
+from django.utils.translation import gettext
+
+django.utils.translation.ugettext = gettext
+
 mimetypes.add_type("text/css",".css",True)
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -37,11 +42,14 @@ DEBUG = bool(os.environ.get("DEBUG",1))
 
 ALLOWED_HOSTS = load_env_var_list("ALLOWED_HOSTS",'["0.0.0.0","127.0.0.1"]')
 
-CORS_ALLOWED_ORIGINS = load_env_var_list("CORS_ALLOWED_ORIGINS",'["http://0.0.0.0:3000"')
+CORS_ALLOWED_ORIGINS = load_env_var_list("CORS_ALLOWED_ORIGINS",'["http://0.0.0.0:3000"]')
+
+CORS_ORIGIN_ALLOW_ALL = True
 
 # Application definition
 
 INSTALLED_APPS = [
+    'user_managment',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -54,7 +62,6 @@ INSTALLED_APPS = [
     'drf_yasg',
     'graphene_django',
     'whitenoise',
-    'user_managment'
 ]
 
 MIDDLEWARE = [
@@ -75,7 +82,10 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework_simplejwt.authentication.JWTAuthentication'
     ],
-    'DEFAULT_PERMISSION_CLASSES': ( 'rest_framework.permissions.IsAuthenticatedOrReadOnly', )
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+        'rest_framework.permissions.IsAuthenticatedOrReadOnly',
+    ]
 }
 
 GRAPHENE = {
@@ -147,7 +157,8 @@ AUTHENTICATION_BACKEND = [
 ]
 
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
+    'TOKEN_OBTAIN_SERIALIZER': "user_managment.token.UserManagmentTokenObtainPairSerializer",
+    'ACCESS_TOKEN_LIFETIME': timedelta(hours=1),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=30)
 }
 

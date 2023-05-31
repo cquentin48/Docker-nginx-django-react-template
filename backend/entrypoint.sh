@@ -12,10 +12,10 @@ then
 fi
 
 echo "Make migrations"
+make generate_static_auto
+
 make make_migrations
 
 make migrate
-
-make generate_static_auto
 
 make run

@@ -11,18 +11,19 @@ import {
 
 import MenuIcon from "@mui/icons-material/Menu";
 import PersonIcon from "@mui/icons-material/Person";
-import TopBarMenuDialog from "./topBarMenuDialog";
-import LoginDialog from "./loginDialog";
+import type User from "../../model/user/user";
+import TopBarMenu from "./menu/topBarMenu";
+import LoginDialog from "../dialog/loginDialog";
 
 interface TopBarState {
-  i: number;
   anchorEl: HTMLElement | null;
   openedMenu: boolean;
   openedDialog: boolean;
 }
 interface TopBarProps {
   isConnected: boolean;
-  handleLoginAction: (username: string, password: string) => void;
+  handleLoginAction: (username: string, password: string) => Promise<any>;
+  handleUpdateAction: (user: User) => void;
 }
 
 /* eslint-disable */
@@ -31,7 +32,6 @@ class TopBar extends React.Component<TopBarProps, TopBarState> {
   constructor(props: TopBarProps) {
     super(props);
     this.state = {
-      i: 0,
       anchorEl: null,
       openedMenu: false,
       openedDialog: false,
@@ -66,7 +66,6 @@ class TopBar extends React.Component<TopBarProps, TopBarState> {
   }
 
   handleDialogClosed() {
-    console.log("Fermeture!");
     this.setState({
       openedDialog: false,
     });
@@ -109,16 +108,20 @@ class TopBar extends React.Component<TopBarProps, TopBarState> {
             </Toolbar>
           </AppBar>
         </Box>
-        <TopBarMenuDialog
+        <TopBarMenu
           anchorEl={state.anchorEl}
           handleClose={this.handleMenuClose}
           openedMenu={state.openedMenu}
           openDialog={this.handleDialogOpen}
+          isConnected={props.isConnected}
+          handleDialogOpen={this.handleDialogOpen}
+          handleMenuClose={this.handleMenuClose}
         />
         <LoginDialog
           handleClose={this.handleDialogClosed}
           open={state.openedDialog}
           handleLoginAction={props.handleLoginAction}
+          handleUpdateAction={props.handleUpdateAction}
         />
       </div>
     );

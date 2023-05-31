@@ -2,34 +2,66 @@ import axios from "axios";
 import jwt_decode from "jwt-decode";
 import User from "./user";
 
-const API_URL = "http://localhost:8000/api/v1/";
+const API_URL = "http://0.0.0.0:80/api/v1/";
+
+interface DecodedJWTToken {
+  tokenType: string;
+  exp: string;
+  iat: string;
+  jti: string;
+  userId: string;
+  username: string;
+  email: string;
+  isAdmin: [boolean];
+  profilePicture: [string];
+  registrationDate: [number];
+  lastLoginDate: number;
+}
 
 class UserFactory {
   static async authenticate(username: string, password: string): Promise<any> {
     axios
-      .post(API_URL + "user/auth", {
-        params: {
+      .post(
+        API_URL + "user/auth",
+        {
           username,
           password,
         },
-        headers: {
-          "Content-Type": "application/json",
-        },
-      })
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      )
       .then((response) => {
         if (response.status === 200) {
           const token = response.data.access;
-          return this.decodeJWTToken(token);
+          const userValue = UserFactory.decodeJWTToken(token);
+          return userValue;
         } else {
-          throw new Error("Error!"); // Replace here with the differents exceptions
+          throw Error(response.data.detail);
         }
-      }).catch(error=>{console.log(error)});
+      })
+      .catch((error) => {
+        return new Error(error);
+      });
   }
 
+  /**
+   * Decode the JSON Web token as a User
+   * @param token JWT Token sent
+   * @returns User authentified User
+   */
   private static decodeJWTToken(token: string): User {
-    const dataDecoded = jwt_decode(token);
-    console.log(dataDecoded);
-    return new User();
+    const dataDecoded = jwt_decode<DecodedJWTToken>(token);
+    return new User(
+      dataDecoded.username,
+      dataDecoded.email,
+      dataDecoded.isAdmin[0],
+      dataDecoded.registrationDate[0],
+      dataDecoded.profilePicture[0],
+      dataDecoded.lastLoginDate
+    );
   }
 }
 
