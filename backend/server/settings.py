@@ -10,9 +10,12 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 from datetime import timedelta
+from doctest import debug
 import os
 
 from pathlib import Path
+
+import debugpy
 
 import mimetypes
 
@@ -24,6 +27,12 @@ import django
 from django.utils.translation import gettext
 
 django.utils.translation.ugettext = gettext
+
+debugpy.listen(('0.0.0.0',8000))
+debugpy.listen(('0.0.0.0',80))
+
+debugpy.wait_for_client()
+debugpy.breakpoint()
 
 mimetypes.add_type("text/css",".css",True)
 

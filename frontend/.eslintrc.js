@@ -5,8 +5,7 @@ module.exports = {
   },
   extends: [
     'plugin:react/recommended',
-    'standard-with-typescript',
-    "prettier"
+    'standard-with-typescript'
   ],
   ignorePatterns:[
     "setupTests.ts",
@@ -41,7 +40,7 @@ module.exports = {
     ],
     "@typescript-eslint/indent": [
       "error",
-      2,
+      4,
       {
         "SwitchCase": 1
       }

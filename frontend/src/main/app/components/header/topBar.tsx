@@ -1,12 +1,12 @@
 import React from "react";
 
 import {
-  AppBar,
-  Button,
-  Box,
-  Toolbar,
-  IconButton,
-  Avatar,
+    AppBar,
+    Button,
+    Box,
+    Toolbar,
+    IconButton,
+    Avatar
 } from "@mui/material";
 
 import MenuIcon from "@mui/icons-material/Menu";
@@ -14,16 +14,18 @@ import PersonIcon from "@mui/icons-material/Person";
 import type User from "../../model/user/user";
 import TopBarMenu from "./menu/topBarMenu";
 import LoginDialog from "../dialog/loginDialog";
+import { type VariantType } from "notistack";
 
 interface TopBarState {
-  anchorEl: HTMLElement | null;
-  openedMenu: boolean;
-  openedDialog: boolean;
+    anchorEl: HTMLElement | null
+    openedMenu: boolean
+    openedDialog: boolean
 }
 interface TopBarProps {
-  isConnected: boolean;
-  handleLoginAction: (username: string, password: string) => Promise<any>;
-  handleUpdateAction: (user: User) => void;
+    isConnected: boolean
+    handleLoginAction: (username: string, password: string) => Promise<any>
+    handleUpdateAction: (user: User) => void
+    displayNotificationFunction: (message: string, severity: VariantType) => void
 }
 
 /* eslint-disable */
@@ -122,6 +124,7 @@ class TopBar extends React.Component<TopBarProps, TopBarState> {
           open={state.openedDialog}
           handleLoginAction={props.handleLoginAction}
           handleUpdateAction={props.handleUpdateAction}
+          displayNotificationFunction={props.displayNotificationFunction}
         />
       </div>
     );
