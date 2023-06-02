@@ -7,28 +7,35 @@ import { Provider } from "react-redux";
 import { SnackbarProvider, type VariantType } from "notistack";
 import WebAPPRouter from "./pages/router";
 import { store } from "./store/store";
+import localizedStrings from "./model/locale/locale";
+import { useLoginMutation } from "./store/user/userSlice";
 
 class App extends React.Component<{}> {
     constructor (props: {}) {
         super(props);
 
-        // this.initStoreSubscribe();
-
-        this.updateUser = this.updateUser.bind(this);
+        this.handleLogin = this.handleLogin.bind(this);
         this.displayNotification = this.displayNotification.bind(this);
     }
 
-    /*
-    initStoreSubscribe (): void {
-        store.subscribe(() => {
-            const state = store.getState().user;
-            if (state.message !== undefined) {
-                // enqueueSnackbar(state.message.getMessage(),{action:state.message.getSeverity()})
-                console.log("Succès!");
+    handleLogin = (username: string, password:string): void => {
+        /* eslint-disable @typescript-eslint/no-unused-vars */
+        const [login, { isLoading }] = useLoginMutation();
+
+        login({ username, password }).unwrap().then(result => {
+            const className = result.constructor.name;
+
+            if (className !== "APIError") {
+                throw Error(localizedStrings.formatString("LOGIN_FAILED") as string);
             }
+
+            const message: string = localizedStrings.formatString("LOGIN_SUCCESS") as string;
+            const severity: VariantType = "success";
+            this.displayNotification(message, severity);
+        }).catch((exception: Error) => {
+            this.displayNotification(exception.message, "error")
         });
     }
-    */
 
     /**
      * Display a notification
@@ -38,17 +45,6 @@ class App extends React.Component<{}> {
     displayNotification (message: string, severity: VariantType): void {
         console.log(`Type ${message}; severity ${severity}`);
         // enqueueSnackbar(message,{ action: severity});
-    }
-
-    /**
-   * Set the user in the frontend
-   * @param user Authentified user
-   */
-    updateUser (user: User): void {
-        /*
-        this.setState({
-            user
-        }); */
     }
 
     render (): JSX.Element {

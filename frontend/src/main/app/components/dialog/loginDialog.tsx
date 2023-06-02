@@ -11,7 +11,7 @@ import {
 import { CleaningServices, VpnKey } from "@mui/icons-material";
 import type User from "../../model/user/user";
 import CustomAlertSnackbar from "../widgets/snackBarAlert";
-import { useLoginQuery } from "../../store/user/userSlice";
+import { useLoginMutation } from "../../store/user/userSlice";
 import { type VariantType } from "notistack";
 import localizedStrings from "../../model/locale/locale";
 
@@ -57,6 +57,7 @@ class LoginDialog extends React.Component<LoginDialogProps, LoginDialogState> {
         this.updatePasswordInput = this.updatePasswordInput.bind(this);
         this.updateUsernameInput = this.updateUsernameInput.bind(this);
         this.handleCloseSnackbar = this.handleCloseSnackbar.bind(this);
+        this.handleLogin = this.handleLogin.bind(this);
     }
 
     resetInputValues (): void {
@@ -114,9 +115,31 @@ class LoginDialog extends React.Component<LoginDialogProps, LoginDialogState> {
         });
     }
 
+    handleLogin = (displayNotificationFunction:((message: string, severity: VariantType) => void)): void => {
+        const { username, password } = this.state;
+
+        /* eslint-disable @typescript-eslint/no-unused-vars */
+        const [login, { isLoading }] = useLoginMutation();
+
+        login({ username, password }).unwrap().then(result => {
+            const className = result.constructor.name;
+
+            if (className !== "APIError") {
+                throw Error(localizedStrings.formatString("LOGIN_FAILED") as string);
+            }
+
+            const message: string = localizedStrings.formatString("LOGIN_SUCCESS") as string;
+            const severity: VariantType = "success"
+            displayNotificationFunction(message, severity)
+        }).catch((exception: Error) => {
+            displayNotificationFunction(exception.message, "error")
+        });
+    }
+
     render (): JSX.Element {
         const props = this.props;
         const state = this.state;
+
         return (
             <div>
                 <Dialog
@@ -157,10 +180,8 @@ class LoginDialog extends React.Component<LoginDialogProps, LoginDialogState> {
                                 maxHeight: "40px"
                             }}
                             onClick={() => {
-                                const { username, password } = this.state;
-
-                                const result = useLoginQuery({ username, password });
-
+                                this.handleLogin(props.displayNotificationFunction);
+                                /*
                                 let message: string;
                                 let severity: VariantType;
                                 if (result.isSuccess) {
@@ -172,6 +193,7 @@ class LoginDialog extends React.Component<LoginDialogProps, LoginDialogState> {
                                 }
 
                                 props.displayNotificationFunction(message, severity)
+                                */
                             }}
                             startIcon={<VpnKey />}
                         >

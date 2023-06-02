@@ -3,6 +3,10 @@ export interface APIResponse {
     access: string
 }
 
+export interface APIError {
+    detail: string
+}
+
 export interface LoginInput {
     username: string
     password: string
