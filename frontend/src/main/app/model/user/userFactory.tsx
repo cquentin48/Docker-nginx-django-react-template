@@ -1,9 +1,9 @@
-import axios from "axios";
 import jwt_decode from "jwt-decode";
 import User from "./user";
-import { LOGIN_SUCCESS } from "../../store/returnsType/userReturnsType";
+import { useLoginMutation } from "../../store/user/userSlice";
+import { type APIError, type APIResponse } from "./httpRequestInterfaces";
 
-const API_URL = "http://0.0.0.0:80/api/v1/";
+// const API_URL = "http://0.0.0.0:80/api/v1/";
 
 interface DecodedJWTToken {
     tokenType: string
@@ -24,51 +24,49 @@ export interface AuthInput {
     password: string
 }
 
+export const authenticate = async (username: string, password: string): Promise<APIResponse | APIError> => {
+    /* eslint-disable @typescript-eslint/no-unused-vars */
+    const [login, { isLoading }] = useLoginMutation();
+
+    return await login({ username, password }).unwrap();
+}
+
 class UserFactory {
-    static fetchUser (): User {
-        if (localStorage.getItem("user") === "null") {
-            throw Error("No user set");
+    static fetchUser (): User | undefined {
+        if (localStorage.getItem("user") === undefined || localStorage.getItem("user") === null) {
+            if (process.env.IS_IN_DOCKER_COMPOSE_MODE as unknown as number !== 1) {
+                return new User(
+                    "myUsername",
+                    "myEmail",
+                    false,
+                    new Date().valueOf() / 1000,
+                    "",
+                    new Date().valueOf() / 1000
+                )
+            } else {
+                return undefined
+            }
         } else {
-            const userProfile = localStorage.getItem("user") as string;
-            return JSON.parse(userProfile) as User;
+            const userProfile = JSON.parse(localStorage.getItem("user") as string);
+            return new User(
+                userProfile.username,
+                userProfile.email,
+                userProfile.isAdmin,
+                userProfile.registrationDate,
+                userProfile.profilePicture,
+                userProfile.lastLoginDate
+            )
         }
     }
 
-    static async authenticate (username: string, password: string): Promise<any> {
-        axios
-            .post(
-                API_URL + "user/auth",
-                { username, password },
-                {
-                    headers: {
-                        "Content-Type": "application/json"
-                    }
-                }
-            )
-            .then((response) => {
-                if (response.status === 200) {
-                    const token = response.data.access;
-                    const userValue = UserFactory.decodeJWTToken(token);
-
-                    localStorage.setItem("user", JSON.stringify(userValue));
-
-                    return LOGIN_SUCCESS;
-                } else {
-                    throw Error(response.data.detail);
-                }
-            })
-            .catch((error) => {
-                return new Error(error);
-            });
-    }
-
     /**
-   * Decode the JSON Web token as a User
-   * @param token JWT Token sent
-   * @returns User authentified User
-   */
+    * Decode the JSON Web token as a User
+    * @param token JWT Token sent
+    * @returns User authentified User
+    */
     private static decodeJWTToken (token: string): User {
         const dataDecoded = jwt_decode<DecodedJWTToken>(token);
+        console.log(dataDecoded);
         return new User(
             dataDecoded.username,
             dataDecoded.email,
@@ -77,6 +75,29 @@ class UserFactory {
             dataDecoded.profilePicture[0],
             dataDecoded.lastLoginDate
         );
+    }
+
+    /**
+     * Set the value of the authenticated user to the local storage
+     * @param token login token of the user
+     */
+    public static updateUser (token: string): void {
+        const user: User = UserFactory.decodeJWTToken(token);
+        localStorage.setItem("user", JSON.stringify(user));
+    }
+
+    /**
+     * Fetch the user from the local storage
+     * @returns {User} current logged-in user
+     */
+    public static getUser (): User | undefined {
+        const stringifiedUser: string | null = localStorage.getItem("user");
+        if (stringifiedUser === null) {
+            return undefined;
+        }
+        const user: User = new User();
+        Object.assign(user, stringifiedUser);
+        return user;
     }
 }
 

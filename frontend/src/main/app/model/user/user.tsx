@@ -4,7 +4,7 @@ class User {
     private readonly registrationDate;
     private readonly isAdmin;
     private readonly profilePicture;
-    private readonly lastLogin;
+    private readonly lastLoginDate;
 
     constructor (
         username: string = "",
@@ -12,13 +12,13 @@ class User {
         admin: boolean = false,
         registrationDate: number = 0,
         profilePicture: string = "",
-        lastLogin: number = 0
+        lastLoginDate: number = 0
     ) {
         this.username = username;
         this.email = email;
         this.isAdmin = admin;
         this.registrationDate = registrationDate;
-        this.lastLogin = lastLogin;
+        this.lastLoginDate = lastLoginDate;
         this.profilePicture = profilePicture;
     }
 
@@ -38,8 +38,8 @@ class User {
         return this.registrationDate;
     }
 
-    getLastLogin (): number {
-        return this.lastLogin;
+    getLastLoginDate (): number {
+        return this.lastLoginDate;
     }
 
     getProfilePicture (): string {

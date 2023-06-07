@@ -4,12 +4,12 @@ class MessageNotification {
     private readonly message;
     private readonly severity;
 
-    constructor (message: string = "", severity: VariantType = "default") {
+    constructor (message: string | React.ReactNode, severity: VariantType = "default") {
         this.message = message;
         this.severity = severity;
     }
 
-    getMessage (): string {
+    getMessage (): string | React.ReactNode {
         return this.message;
     }
 

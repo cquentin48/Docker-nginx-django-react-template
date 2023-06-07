@@ -4,25 +4,23 @@ import {
     Button,
     Container,
     Dialog,
+    DialogContentText,
     DialogTitle,
     TextField
 } from "@mui/material";
 
-import { CleaningServices, VpnKey } from "@mui/icons-material";
-import type User from "../../model/user/user";
-import CustomAlertSnackbar from "../widgets/snackBarAlert";
-import { useLoginMutation } from "../../store/user/userSlice";
-import { type VariantType } from "notistack";
-import localizedStrings from "../../model/locale/locale";
+import { CleaningServices } from "@mui/icons-material";
+import { LoginButton } from "./loginButton";
+import { ButtonDialogSX, TextFieldDialogSX } from "../styles";
+import localizedStrings from "../../../model/locale/locale";
+import type MessageNotification from "../../../model/message/message";
 
 type AlertColor = "success" | "info" | "warning" | "error";
 
 interface LoginDialogProps {
     open: boolean
     handleClose: () => void
-    handleLoginAction: (username: string, password: string) => Promise<any>
-    handleUpdateAction: (user: User) => void
-    displayNotificationFunction: (message: string, severity: VariantType) => void
+    displayNotificationFunction: (message: MessageNotification) => void
 }
 
 interface LoginDialogState {
@@ -32,15 +30,6 @@ interface LoginDialogState {
     snackbarOpened: boolean
     snackbarSeverity: AlertColor
 }
-
-const TextFieldDialogSX = {
-    margin: "16px 24px 16px"
-};
-
-const ButtonDialogSX = {
-    width: "48.1%",
-    margin: "16px 8px 16px"
-};
 
 class LoginDialog extends React.Component<LoginDialogProps, LoginDialogState> {
     constructor (props: LoginDialogProps) {
@@ -56,8 +45,6 @@ class LoginDialog extends React.Component<LoginDialogProps, LoginDialogState> {
         this.resetInputValues = this.resetInputValues.bind(this);
         this.updatePasswordInput = this.updatePasswordInput.bind(this);
         this.updateUsernameInput = this.updateUsernameInput.bind(this);
-        this.handleCloseSnackbar = this.handleCloseSnackbar.bind(this);
-        this.handleLogin = this.handleLogin.bind(this);
     }
 
     resetInputValues (): void {
@@ -106,36 +93,6 @@ class LoginDialog extends React.Component<LoginDialogProps, LoginDialogState> {
         });
     }
 
-    handleCloseSnackbar (_: React.SyntheticEvent | Event, reason?: string): void {
-        if (reason === "clickaway") {
-            return;
-        }
-        this.setState({
-            snackbarOpened: false
-        });
-    }
-
-    handleLogin = (displayNotificationFunction:((message: string, severity: VariantType) => void)): void => {
-        const { username, password } = this.state;
-
-        /* eslint-disable @typescript-eslint/no-unused-vars */
-        const [login, { isLoading }] = useLoginMutation();
-
-        login({ username, password }).unwrap().then(result => {
-            const className = result.constructor.name;
-
-            if (className !== "APIError") {
-                throw Error(localizedStrings.formatString("LOGIN_FAILED") as string);
-            }
-
-            const message: string = localizedStrings.formatString("LOGIN_SUCCESS") as string;
-            const severity: VariantType = "success"
-            displayNotificationFunction(message, severity)
-        }).catch((exception: Error) => {
-            displayNotificationFunction(exception.message, "error")
-        });
-    }
-
     render (): JSX.Element {
         const props = this.props;
         const state = this.state;
@@ -171,34 +128,12 @@ class LoginDialog extends React.Component<LoginDialogProps, LoginDialogState> {
                         onChange={this.updatePasswordInput}
                     />
                     <Container maxWidth={false}>
-                        <Button
-                            variant="outlined"
-                            sx={ButtonDialogSX}
-                            key="login-dialog-signIn"
-                            style={{
-                                minHeight: "40px",
-                                maxHeight: "40px"
-                            }}
-                            onClick={() => {
-                                this.handleLogin(props.displayNotificationFunction);
-                                /*
-                                let message: string;
-                                let severity: VariantType;
-                                if (result.isSuccess) {
-                                    message = localizedStrings.formatString("LOGIN_SUCCESS") as string;
-                                    severity = "success"
-                                } else {
-                                    message = localizedStrings.formatString("LOGIN_FAILED") as string;
-                                    severity = "error"
-                                }
-
-                                props.displayNotificationFunction(message, severity)
-                                */
-                            }}
-                            startIcon={<VpnKey />}
-                        >
-                            Login
-                        </Button>
+                        <LoginButton
+                            username={state.username}
+                            password={state.password}
+                            displaySnackBar={props.displayNotificationFunction}
+                            handleClose={props.handleClose}
+                        />
                         <Button
                             variant="outlined"
                             sx={ButtonDialogSX}
@@ -212,16 +147,13 @@ class LoginDialog extends React.Component<LoginDialogProps, LoginDialogState> {
                             }}
                             startIcon={<CleaningServices />}
                         >
-              Resets Inputs
+                            {localizedStrings.RESET_INPUT_LABEL}
                         </Button>
+                        <DialogContentText>
+                            {localizedStrings.LOST_PASSWORDS_TEXT}
+                        </DialogContentText>
                     </Container>
                 </Dialog>
-                <CustomAlertSnackbar
-                    message={state.snackbarMessage}
-                    open={state.snackbarOpened}
-                    handleClose={this.handleCloseSnackbar}
-                    severity={state.snackbarSeverity}
-                />
             </div>
         );
     }

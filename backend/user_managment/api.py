@@ -1,10 +1,8 @@
 from rest_framework import serializers
 from rest_framework import generics, status
-from rest_framework.exceptions import NotFound, PermissionDenied
+from rest_framework.exceptions import PermissionDenied
 from rest_framework.response import Response
-from rest_framework.permissions import AllowAny, IsAuthenticated
-
-from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework.permissions import IsAuthenticated
 
 from user_managment.views import format_http_prefix
 
@@ -32,7 +30,7 @@ class RegisterAPI(generics.GenericAPIView):
         try:
             serializer = self.get_serializer(data=request.data)
             serializer.is_valid(raise_exception=True)
-            user = serializer.create(serializer.validated_data)
+            user:User = serializer.create(serializer.validated_data)
 
             return Response(
             {
@@ -80,7 +78,7 @@ class ProfileViewAPI(generics.GenericAPIView):
         user = request.user
         username_entered = kwargs['username']
         try:
-            user = ProfileSerializer.get(username_entered,user)
+            user:User = ProfileSerializer.get(username_entered,user)
             if user.is_admin or user.is_staff:
                 profile = UserStaffProfileSerializer(
                     user,

@@ -206,6 +206,3 @@ class UserManagmentTokenObtainPairSerializer(serializers.Serializer):
     """
     username = serializers.CharField(required=True)
     password = serializers.CharField(required=True)
-
-    def validate(self, attrs):
-        return super().validate(attrs)

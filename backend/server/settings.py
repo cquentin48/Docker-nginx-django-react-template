@@ -10,19 +10,19 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 from datetime import timedelta
-from doctest import debug
 import os
 
 from pathlib import Path
 
 import mimetypes
 
+import django
+from django.utils.translation import gettext
+
 from tools.env_vars import load_env_var_list
 
 from tools.localisation import Localisation
 
-import django
-from django.utils.translation import gettext
 
 django.utils.translation.ugettext = gettext
 
@@ -160,7 +160,8 @@ AUTHENTICATION_BACKEND = [
 SIMPLE_JWT = {
     'TOKEN_OBTAIN_SERIALIZER': "user_managment.token.UserManagmentTokenObtainPairSerializer",
     'ACCESS_TOKEN_LIFETIME': timedelta(hours=1),
-    'REFRESH_TOKEN_LIFETIME': timedelta(days=30)
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=30),
+    'UPDATE_LAST_LOGIN': True,
 }
 
 # Internationalization

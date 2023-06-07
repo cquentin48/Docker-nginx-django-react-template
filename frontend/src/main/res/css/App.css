@@ -36,3 +36,27 @@
     transform: rotate(360deg);
   }
 }
+
+.PageButtonNoStartIcon {
+  max-height: 40;
+  padding-block-end: 24;
+  padding-block-start: 24;
+}
+
+.PageButtonStartIcon {
+  max-height: 40;
+  padding-block-end: 24;
+  padding-block-start: 16;
+}
+
+.textInput {
+  margin-bottom: 6px;
+}
+
+.ProfileMainContent{
+  width: 60%;
+  height: auto;
+  margin: 0 auto;
+  padding: 10px;
+  position: relative;
+}
