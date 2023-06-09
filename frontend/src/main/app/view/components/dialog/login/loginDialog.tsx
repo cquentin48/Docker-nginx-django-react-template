@@ -12,15 +12,13 @@ import {
 import { CleaningServices } from "@mui/icons-material";
 import { LoginButton } from "./loginButton";
 import { ButtonDialogSX, TextFieldDialogSX } from "../styles";
-import localizedStrings from "../../../model/locale/locale";
-import type MessageNotification from "../../../model/message/message";
+import localizedStrings from "../../../../app/locale/locale";
 
 type AlertColor = "success" | "info" | "warning" | "error";
 
 interface LoginDialogProps {
     open: boolean
     handleClose: () => void
-    displayNotificationFunction: (message: MessageNotification) => void
 }
 
 interface LoginDialogState {
@@ -131,7 +129,6 @@ class LoginDialog extends React.Component<LoginDialogProps, LoginDialogState> {
                         <LoginButton
                             username={state.username}
                             password={state.password}
-                            displaySnackBar={props.displayNotificationFunction}
                             handleClose={props.handleClose}
                         />
                         <Button

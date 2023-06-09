@@ -2,7 +2,7 @@ import React from "react";
 
 import { Box, Card, Grid } from "@mui/material";
 
-import type User from "../../../model/user/user";
+import type User from "../../../../model/user/user";
 import APPAvatar from "../../widgets/appAvatar";
 import MainInfosTable from "./mainInfosTable";
 
@@ -17,6 +17,9 @@ export default function ProfileMainInfos (props: ProfileMainInfosProps): JSX.Ele
             item
             xs={2}
             alignItems="center"
+            sx={{
+                height: "100%"
+            }}
         >
             <Card
                 sx={{

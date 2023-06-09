@@ -1,10 +1,10 @@
 import React from "react";
-import type User from "../../model/user/user";
-import UserFactory from "../../model/user/userFactory";
 import Unauthorized from "../error/Unauthorized";
 import { Container, Grid } from "@mui/material";
 import ProfileMainInfos from "../../components/pages/profile/mainInfos";
-import ProfileActions from "../../components/pages/profile/profileActions";
+import ProfileActionList from "../../components/pages/profile/profileActionList";
+import type User from "../../../model/user/user";
+import UserFactory from "../../../model/user/userFactory";
 
 interface ProfilePageState {
     user?: User
@@ -41,7 +41,9 @@ class ProfilePage extends React.Component<ProfilePageProps, ProfilePageState> {
                         }}
                     >
                         <ProfileMainInfos user={user}/>
-                        <ProfileActions user={user}/>
+                        <ProfileActionList
+                            user={user}
+                        />
                     </Grid>
                 </Container>
             )

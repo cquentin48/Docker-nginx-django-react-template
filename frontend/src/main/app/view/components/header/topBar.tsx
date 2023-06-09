@@ -6,9 +6,8 @@ import {
     Toolbar
 } from "@mui/material";
 
-import ProfileManagmentMenu from "../widgets/header/profile/profileManagment";
-import type MessageNotification from "../../model/message/message";
-import { Drawer } from "../widgets/drawer";
+import ProfileManagment from "../widgets/header/profile/menu/profileManagment";
+import { Drawer } from "../widgets/header/profile/drawer/drawer";
 
 interface TopBarState {
     anchorEl: HTMLElement | null
@@ -17,7 +16,6 @@ interface TopBarState {
 }
 interface TopBarProps {
     isConnected: boolean
-    displayNotificationFunction: (message: MessageNotification) => void
 }
 
 class TopBar extends React.Component<TopBarProps, TopBarState> {
@@ -63,9 +61,11 @@ class TopBar extends React.Component<TopBarProps, TopBarState> {
         });
     }
 
+    // Placer à gauche les boutons
     render (): React.ReactNode {
         const state = this.state;
         const props = this.props;
+
         return (
             <div>
                 <Box sx={{ flexGrow: 1 }}>
@@ -73,18 +73,20 @@ class TopBar extends React.Component<TopBarProps, TopBarState> {
                         <Toolbar sx={{ justifyContent: "space-between" }}>
                             <Drawer
                                 isUserConnected={props.isConnected}
-                            />
-                            <ProfileManagmentMenu
-                                anchorEl={state.anchorEl}
-                                handleClose={this.handleMenuClose}
                                 openedMenu={state.openedMenu}
-                                openDialog={this.handleDialogOpen}
+                                anchorEl={state.anchorEl}
+                                handleDialogOpen={this.handleDialogOpen}
+                                handleMenuClose={this.handleMenuClose}
+                                handleDialogClosed={this.handleDialogClosed}
+                                openedDialog={state.openedDialog}/>
+                            <ProfileManagment
+                                anchorEl={state.anchorEl}
+                                openedMenu={state.openedMenu}
                                 isConnected={props.isConnected}
                                 handleDialogOpen={this.handleDialogOpen}
                                 handleMenuClose={this.handleMenuClose}
                                 handleDialogClosed={this.handleDialogClosed}
                                 openedDialog={state.openedDialog}
-                                displayNotificationFunction={props.displayNotificationFunction}
                                 handleMenuClick={this.handleMenuClick}
                             />
                         </Toolbar>

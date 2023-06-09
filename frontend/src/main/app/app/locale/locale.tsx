@@ -3,6 +3,9 @@ import LocalizedStrings from "react-localization";
 const localizedStrings = new LocalizedStrings({
     "en-US": {
         CHANGE_PASSWORD: "Change password",
+        CONNECTED_MENU_LOGOUT_LABEL: "Logout",
+        CONNECTED_MENU_PROFILE_LABEL: "My profile",
+        CONNECTED_MENU_SETTINGS_LABEL: "Settings",
         DATE: "{1}/{0}/{2}",
         EMAIL_LABEL: "Email",
         FAILED_LOGIN: "Login failed! Please check your username and password!",
@@ -20,10 +23,14 @@ const localizedStrings = new LocalizedStrings({
         REGISTERED_SINCE: "Registered since",
         RESET_INPUT_LABEL: "Reset inputs",
         SUCCESSFUL_LOGIN: "Successful login!",
-        USERNAME_LABEL: "Username"
+        USERNAME_LABEL: "Username",
+        WEB_APP_NOT_READY: "Web application not ready!"
     },
     "fr-FR": {
         CHANGE_PASSWORD: "Changer de mot de passe",
+        CONNECTED_MENU_LOGOUT_LABEL: "Déconnexion",
+        CONNECTED_MENU_PROFILE_LABEL: "Mon profil",
+        CONNECTED_MENU_SETTINGS_LABEL: "Paramètres",
         DATE: "{0}/{1}/{2}",
         EMAIL_LABEL: "Email",
         FAILED_LOGIN:
@@ -42,7 +49,8 @@ const localizedStrings = new LocalizedStrings({
         REGISTER_LABEL: "Créer un compte",
         RESET_INPUT_LABEL: "Réinitialiser",
         SUCCESSFUL_LOGIN: "Connexion réussie!",
-        USERNAME_LABEL: "Pseudonyme"
+        USERNAME_LABEL: "Pseudonyme",
+        WEB_APP_NOT_READY: "Web application not ready!"
     }
 });
 

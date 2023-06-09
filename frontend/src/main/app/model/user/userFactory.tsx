@@ -1,7 +1,8 @@
 import jwt_decode from "jwt-decode";
 import User from "./user";
-import { useLoginMutation } from "../../store/user/userSlice";
+import { useLoginMutation } from "../../controller/user/userSlice";
 import { type APIError, type APIResponse } from "./httpRequestInterfaces";
+import { isInContainer } from "../../view/utils/utils";
 
 // const API_URL = "http://0.0.0.0:80/api/v1/";
 
@@ -34,18 +35,7 @@ export const authenticate = async (username: string, password: string): Promise<
 class UserFactory {
     static fetchUser (): User | undefined {
         if (localStorage.getItem("user") === undefined || localStorage.getItem("user") === null) {
-            if (process.env.IS_IN_DOCKER_COMPOSE_MODE as unknown as number !== 1) {
-                return new User(
-                    "myUsername",
-                    "myEmail",
-                    false,
-                    new Date().valueOf() / 1000,
-                    "",
-                    new Date().valueOf() / 1000
-                )
-            } else {
-                return undefined
-            }
+            return undefined
         } else {
             const userProfile = JSON.parse(localStorage.getItem("user") as string);
             return new User(
@@ -82,7 +72,19 @@ class UserFactory {
      * @param token login token of the user
      */
     public static updateUser (token: string): void {
-        const user: User = UserFactory.decodeJWTToken(token);
+        let user: User;
+        if (isInContainer()) {
+            user = new User(
+                "myUsername",
+                "myEmail",
+                false,
+                new Date().valueOf() / 1000,
+                "",
+                new Date().valueOf() / 1000
+            )
+        } else {
+            user = UserFactory.decodeJWTToken(token);
+        }
         localStorage.setItem("user", JSON.stringify(user));
     }
 

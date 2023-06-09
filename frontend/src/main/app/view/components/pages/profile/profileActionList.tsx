@@ -1,15 +1,24 @@
 import React from "react";
-import type User from "../../../model/user/user";
 import { Box, Card, CardHeader, Grid } from "@mui/material";
-import localizedStrings from "../../../model/locale/locale";
 import ProfileActionAccordion from "./profileActionAccordion";
 import { ManageAccounts } from "@mui/icons-material";
+import localizedStrings from "../../../../app/locale/locale";
+import type User from "../../../../model/user/user";
 
 interface ProfileDateProps {
     user: User
 }
 
-export default function ProfileActions (props: ProfileDateProps): JSX.Element {
+const profileActionList = [
+    {
+        id: 'delete-account',
+        label: 'Delete',
+        description: 'Delete the account',
+        action: undefined
+    }
+]
+
+export default function ProfileActionList (props: ProfileDateProps): JSX.Element {
     const user = props.user;
     return (
         <Grid
@@ -38,6 +47,7 @@ export default function ProfileActions (props: ProfileDateProps): JSX.Element {
                         ListHelper={localizedStrings.PROFILE_ACTIONS_ACCORDION_ACCOUNT_MANAGMENT_HELPER}
                         startIcon={<ManageAccounts/>}
                         user={user}
+                        actionList={profileActionList}
                     />
                 </Box>
             </Card>

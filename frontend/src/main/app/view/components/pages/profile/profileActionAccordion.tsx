@@ -2,9 +2,17 @@ import React from "react";
 
 import { ExpandMore } from "@mui/icons-material";
 import { Accordion, AccordionDetails, AccordionSummary, Button, Typography } from "@mui/material";
-import type User from "../../../model/user/user";
 import PopupState, { bindHover, bindPopover } from "material-ui-popup-state";
 import HoverPoper from "material-ui-popup-state/HoverPopover";
+import ProfileAction from "./profileAction";
+import type User from "../../../../model/user/user";
+
+interface SingleAction {
+    id: string
+    label: string
+    description: string
+    action?: (user: User) => void
+}
 
 interface ProfileActionAccordionProps {
     startIcon: React.ReactNode
@@ -12,6 +20,7 @@ interface ProfileActionAccordionProps {
     ListHelper: string
     id: string
     user: User
+    actionList: SingleAction[]
 }
 
 export default function ProfileActionAccordion (props: ProfileActionAccordionProps): JSX.Element {
@@ -61,7 +70,15 @@ export default function ProfileActionAccordion (props: ProfileActionAccordionPro
                 </PopupState>
             </AccordionSummary>
             <AccordionDetails>
-                <p>List here the content</p>
+                {props.actionList.map((singleAction, _) => {
+                    return (
+                        <ProfileAction
+                            key={singleAction.id}
+                            description={singleAction.description}
+                            id={singleAction.id}
+                            label={singleAction.label}
+                        />)
+                })}
             </AccordionDetails>
         </Accordion>
     )

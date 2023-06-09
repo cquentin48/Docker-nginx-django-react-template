@@ -1,18 +1,19 @@
 import React from "react";
-import { useLoginMutation } from "../../../store/user/userSlice";
-import { type APIResponse } from "../../../model/user/httpRequestInterfaces";
-import localizedStrings from "../../../model/locale/locale";
 import { Button } from "@mui/material";
 import { VpnKey } from "@mui/icons-material";
 import { type VariantType } from "notistack";
 import { ButtonDialogSX } from "../styles";
-import UserFactory from "../../../model/user/userFactory";
-import MessageNotification from "../../../model/message/message";
+
+import localizedStrings from "../../../../app/locale/locale";
+import { useLoginMutation } from "../../../../controller/user/userSlice";
+import { type APIResponse } from "../../../../model/user/httpRequestInterfaces";
+import UserFactory from "../../../../model/user/userFactory";
+import { isInContainer } from "../../../utils/utils";
+import NotificationBuilder from "../../../../app/notification/notificationBuilder";
 
 interface LoginButtonProps {
     username: string
     password: string
-    displaySnackBar: (message: MessageNotification) => void
     handleClose: () => void
 }
 
@@ -36,8 +37,7 @@ export const LoginButton = (props: LoginButtonProps): JSX.Element => {
             severity = "success"
         }
 
-        const notification = new MessageNotification(message, severity)
-        props.displaySnackBar(notification);
+        NotificationBuilder.displayNotification(message, severity);
 
         if ('access' in result) {
             props.handleClose();
@@ -53,23 +53,20 @@ export const LoginButton = (props: LoginButtonProps): JSX.Element => {
                 maxHeight: "40px"
             }}
             onClick={() => {
-                handleLoginButton(props)
-                    .then(() => {
-                        props.handleClose();
-                    })
-                    .catch(error => {
-                        if ('status' in error && error.status === "FETCH_ERROR") {
-                            props.displaySnackBar(
-                                new MessageNotification(
-                                    <div style={{
-                                        verticalAlign: "middle"
-                                    }}>
-                                        {localizedStrings.FETCH_ERROR}
-                                    </div>,
-                                    "error")
-                            )
-                        }
-                    });
+                if (isInContainer()) {
+                    UserFactory.updateUser("");
+                    props.handleClose();
+                } else {
+                    handleLoginButton(props)
+                        .then(() => {
+                            props.handleClose();
+                        })
+                        .catch(error => {
+                            if ('status' in error && error.status === "FETCH_ERROR") {
+                                NotificationBuilder.displayNotification(localizedStrings.FETCH_ERROR, "error")
+                            }
+                        });
+                }
             }}
             startIcon={<VpnKey />}
         >

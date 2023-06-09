@@ -1,8 +1,8 @@
 import React from "react";
 
 import { Person, AlternateEmail, CalendarMonth } from "@mui/icons-material";
-import { formatDate } from "../../../model/locale/locale";
-import type User from "../../../model/user/user";
+import type User from "../../../../model/user/user";
+import { formatDate } from "../../../../app/locale/locale";
 
 interface MainInfosTableProps {
     user: User

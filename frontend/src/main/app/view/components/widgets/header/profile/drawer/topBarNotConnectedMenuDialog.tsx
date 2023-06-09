@@ -1,8 +1,8 @@
 import React from "react";
 
 import { Button } from "@mui/material";
-import localizedStrings from "../../../model/locale/locale";
 import { Login, Person } from "@mui/icons-material";
+import localizedStrings from "../../../../../../app/locale/locale";
 
 interface TopBarMenuNotConnectedDialogProps {
     anchorEl: HTMLElement | null
