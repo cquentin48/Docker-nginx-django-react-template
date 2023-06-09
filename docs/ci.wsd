@@ -1,0 +1,32 @@
+@startuml contiuous integration script
+    class TagData{
+        - name:str
+        - number:str
+        - changelog:str
+        + TagData(name,number,changelog)
+        + getName()->str
+        + getVersion()->str
+        + getChangelog()->str
+    }
+
+    class CommitParser{
+        - parser : argParse.ArgumentParser
+        + parseCommit() -> TagData
+    }
+
+    class ChangelogFileUpdater{
+        - filePath:str
+        + updateChangelogFiles(tagData)
+    }
+
+    class TagCreator{
+        - parser : argParse.ArgumentParser
+        + displayTagName(tagData)
+        + displayagVersion(tagData)
+        + displayTagChangelog(tagData)
+    }
+
+CommitParser --* TagData
+TagData ..> ChangelogFileUpdater
+TagData ..> TagCreator
+@enduml
