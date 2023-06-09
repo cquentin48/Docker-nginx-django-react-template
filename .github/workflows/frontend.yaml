@@ -5,11 +5,12 @@ on: [push]
 jobs:
   frontend-ci:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v2
       - name: Build web app stack
         run: docker-compose up -d --build
       - name: Check if the code is written badly or not
-        run: docker exec app_server_conf npm run lint
+        run: docker exec frontend npm run lint
       - name: Generate unit test coverage report of user created code while launching the unit test suite.
-        run: docker exec app_server_conf npm run coverage
+        run: docker exec frontend npm run coverage
