@@ -16,24 +16,24 @@ RUN rm /etc/nginx/conf.d/default.conf
 
 COPY ./nginx/nginx.conf /etc/nginx/conf.d/default.conf
 
-COPY --from=builder /app /home/app
+COPY --from=builder /app/build /usr/share/nginx/html
 
 WORKDIR /usr/share/nginx/html
 
-RUN mkdir /usr/share/nginx/html/static/locale
-
-COPY --from=builder /app/src/main/res/locale /usr/share/nginx/html/static/locale
-
-EXPOSE 80
-
-COPY --from=builder /app/build /usr/share/nginx/html
+RUN mkdir -p /usr/share/nginx/html/static/locale
 
 RUN apt update -y
 
 RUN apt install npm -y
 
-ENV CI=true
+COPY --from=builder /app/ /home/webApp
 
-WORKDIR /home/app
+COPY --from=builder /app/src/main/res/locale /usr/share/nginx/html/static/locale
+
+EXPOSE 80
+
+WORKDIR /home/webApp
+
+ENV CI=true
 
 CMD ["/bin/bash", "-c", "nginx -g \"daemon off;\""]

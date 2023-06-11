@@ -35,13 +35,11 @@ class ModelTest(TestCase):
         password="mypassword!"
 
         # Acts
-        user:User = User.objects.create(
+        user:User = User.create_superuser(
             username=username,
             email=email,
             password=password
         )
-        user.is_superuser = True
-        user.save(update_fields=["admin"])
 
         # Asserts
         self.assertEqual(user.username,username)

@@ -1,4 +1,4 @@
-from datetime import date
+import django
 
 from django.db import models
 from django.contrib.auth.models import(
@@ -45,12 +45,35 @@ class User(AbstractBaseUser):
 
     registration_date = models.DateTimeField(
         verbose_name=LOCALE.load_localised_text("USER_OBJECT_REGISTRATION_DATE"),
-        default=date.today
+        default=django.utils.timezone.now
     )
 
     USERNAME_FIELD = "username"
 
     REQUIRED_FIELDS = ['email']
+
+    @staticmethod
+    def create_superuser(username:str, password:str, email:str):
+        """Creates a superuser
+
+        Args:
+            - `username` (`str`): username entered
+            - `password` (`str`): password entered
+            - `email` (`str`): email entered
+        
+        Returns:
+            `User`: Admin user
+        """
+        user:User = User.objects.create(username=username,
+            email=email,
+            password=password,
+            admin=True,
+            staff=True,
+            is_active=True
+        )
+        user.save()
+
+        return user
 
     def get_full_name(self) -> str:
         """Get user name
