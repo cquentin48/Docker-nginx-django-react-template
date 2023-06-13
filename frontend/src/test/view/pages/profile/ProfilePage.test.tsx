@@ -1,18 +1,19 @@
-import { render, screen } from "@testing-library/react";
+import React from "react";
+
+import { render } from "@testing-library/react";
 import ProfilePage from "../../../../main/app/view/pages/profile/profilePage";
 import { Typography } from "@mui/material";
 
-afterEach(()=>{
+afterEach(() => {
     localStorage.removeItem("user");
 })
 
-it("Display error", ()=>{
-
+it("Display error", () => {
     // Acts
     const result = render(<ProfilePage/>)
-    const node = render(<Typography variant="h1">
+    render(<Typography variant="h1">
             Accès refusé
-        </Typography>)
+    </Typography>)
 
     // Expects
     console.log(result.container.firstChild?.contains(

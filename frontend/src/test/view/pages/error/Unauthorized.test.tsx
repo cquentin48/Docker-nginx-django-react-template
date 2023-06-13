@@ -4,11 +4,8 @@ import renderer from "react-test-renderer";
 import Unauthorized from "../../../../main/app/view/pages/error/unauthorized";
 
 test("Is login button correctly rendered", () => {
-    // Given
-    let tree:renderer.ReactTestRendererJSON | renderer.ReactTestRendererJSON[] | null;
-
     // Acts
-    tree = renderer.create(
+    const tree = renderer.create(
         <Unauthorized/>
     ).toJSON();
 

@@ -14,11 +14,10 @@ test("Is login button correctly rendered", () => {
         username: "myUser",
         password: "password"
     }
-    const handleCloseDialogFunction = () => {};
-    let tree:renderer.ReactTestRendererJSON | renderer.ReactTestRendererJSON[] | null;
+    const handleCloseDialogFunction = (): void => {};
 
     // Acts
-    tree = renderer.create(
+    const tree = renderer.create(
         <Provider store={store}>
             <LoginButton
                 handleClose={handleCloseDialogFunction}
@@ -46,7 +45,7 @@ testIgnoredInNoContainer("Login button with correct inputs", () => {
             username: "myUser",
             password: "password"
         }
-        const handleCloseDialogFunction = () => {};
+        const handleCloseDialogFunction = (): void => {};
 
         // Acts
         render(
@@ -64,7 +63,7 @@ testIgnoredInNoContainer("Login button with correct inputs", () => {
         // Asserts
         expect(localStorage.getItem("user")).not.toBe(null)
         expect(localStorage.getItem("user")).not.toBe(undefined)
-    }).catch(error=>{
+    }).catch(_ => {
         fail("The login button should update the user!")
     })
 })
