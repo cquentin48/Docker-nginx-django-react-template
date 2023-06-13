@@ -61,7 +61,7 @@ export const setLanguage = (newLanguage: string): void => {
 }
 
 export const formatDate = (timestampDate: number): string => {
-    const date = new Date(timestampDate * 1000);
+    const date = new Date(timestampDate);
     return localizedStrings.formatString(
         localizedStrings.DATE,
         (`0${date.getDate()}`).slice(-2),

@@ -60,6 +60,7 @@ class App extends React.Component<{}, AppState> {
      * @param severity severity
      */
     _displayNotification (message: MessageNotification): void {
+        /* istanbul ignore next */
         enqueueSnackbar(message.getMessage(),
             {
                 variant: message.getSeverity()

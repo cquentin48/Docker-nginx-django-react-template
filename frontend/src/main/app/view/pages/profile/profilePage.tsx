@@ -1,5 +1,5 @@
 import React from "react";
-import Unauthorized from "../error/Unauthorized";
+import Unauthorized from "../error/unauthorized";
 import { Container, Grid } from "@mui/material";
 import ProfileMainInfos from "../../components/pages/profile/mainInfos";
 import ProfileActionList from "../../components/pages/profile/profileActionList";

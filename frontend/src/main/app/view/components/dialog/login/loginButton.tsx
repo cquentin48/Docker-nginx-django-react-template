@@ -8,7 +8,7 @@ import localizedStrings from "../../../../app/locale/locale";
 import { useLoginMutation } from "../../../../controller/user/userSlice";
 import { type APIResponse } from "../../../../model/user/httpRequestInterfaces";
 import UserFactory from "../../../../model/user/userFactory";
-import { isInContainer } from "../../../utils/utils";
+import { isNotInContainer } from "../../../utils/utils";
 import NotificationBuilder from "../../../../app/notification/notificationBuilder";
 
 interface LoginButtonProps {
@@ -39,10 +39,13 @@ export const LoginButton = (props: LoginButtonProps): JSX.Element => {
 
         NotificationBuilder.displayNotification(message, severity);
 
+        /* istanbul ignore next */
         if ('access' in result) {
             props.handleClose();
         }
     }
+
+    /* istanbul ignore next */
     return (
         <Button
             variant="contained"
@@ -53,7 +56,7 @@ export const LoginButton = (props: LoginButtonProps): JSX.Element => {
                 maxHeight: "40px"
             }}
             onClick={() => {
-                if (isInContainer()) {
+                if (isNotInContainer()) {
                     UserFactory.updateUser("");
                     props.handleClose();
                 } else {

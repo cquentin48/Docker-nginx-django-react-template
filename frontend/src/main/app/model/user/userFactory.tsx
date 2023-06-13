@@ -1,8 +1,6 @@
 import jwt_decode from "jwt-decode";
 import User from "./user";
-import { useLoginMutation } from "../../controller/user/userSlice";
-import { type APIError, type APIResponse } from "./httpRequestInterfaces";
-import { isInContainer } from "../../view/utils/utils";
+import { isNotInContainer } from "../../view/utils/utils";
 
 // const API_URL = "http://0.0.0.0:80/api/v1/";
 
@@ -25,16 +23,13 @@ export interface AuthInput {
     password: string
 }
 
-export const authenticate = async (username: string, password: string): Promise<APIResponse | APIError> => {
-    /* eslint-disable @typescript-eslint/no-unused-vars */
-    const [login, { isLoading }] = useLoginMutation();
-
-    return await login({ username, password }).unwrap();
-}
-
 class UserFactory {
+    private static isUserDefined (): boolean {
+        return !(localStorage.getItem("user") === null || localStorage.getItem("user") === undefined || localStorage.getItem("user") === "");
+    }
+
     static fetchUser (): User | undefined {
-        if (localStorage.getItem("user") === undefined || localStorage.getItem("user") === null) {
+        if (!UserFactory.isUserDefined()) {
             return undefined
         } else {
             const userProfile = JSON.parse(localStorage.getItem("user") as string);
@@ -56,7 +51,6 @@ class UserFactory {
     */
     private static decodeJWTToken (token: string): User {
         const dataDecoded = jwt_decode<DecodedJWTToken>(token);
-        console.log(dataDecoded);
         return new User(
             dataDecoded.username,
             dataDecoded.email,
@@ -73,7 +67,7 @@ class UserFactory {
      */
     public static updateUser (token: string): void {
         let user: User;
-        if (isInContainer()) {
+        if (isNotInContainer()) {
             user = new User(
                 "myUsername",
                 "myEmail",
@@ -94,7 +88,7 @@ class UserFactory {
      */
     public static getUser (): User | undefined {
         const stringifiedUser: string | null = localStorage.getItem("user");
-        if (stringifiedUser === null) {
+        if (!(UserFactory.isUserDefined())) {
             return undefined;
         }
         const user: User = new User();

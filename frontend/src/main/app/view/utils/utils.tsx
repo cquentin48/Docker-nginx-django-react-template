@@ -1,9 +1,9 @@
 /**
- * Check if the web application is running inside a docker container
- * - True yes
- * - False no
+ * Check if the web application is not running inside a docker container
+ * - `true` yes
+ * - `false` no
  * @returns {boolean} whether the app is inside a docker container or not
  */
-export function isInContainer (): boolean {
-    return process.env.IS_IN_DOCKER_COMPOSE_MODE as unknown as number !== 1;
+export function isNotInContainer (): boolean {
+    return process.env.IS_IN_DOCKER_COMPOSE_MODE !== "1";
 }
