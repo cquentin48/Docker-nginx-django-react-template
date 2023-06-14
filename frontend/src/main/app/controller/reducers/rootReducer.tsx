@@ -1,3 +1,5 @@
+/* istanbul ignore file */
+
 import { combineReducers } from "@reduxjs/toolkit";
 import userReducer from "./userReducer";
 

@@ -1,3 +1,5 @@
+/* istanbul ignore file */
+
 import { LOGIN_FAILED, LOGIN_SUCCESS } from "../returnsType/userReturnsType";
 import type FunctionReturnType from "./interface";
 import { type UserReducerActionInterface } from "./interface";

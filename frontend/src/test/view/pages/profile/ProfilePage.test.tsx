@@ -1,8 +1,7 @@
 import React from "react";
 
-import { render } from "@testing-library/react";
+import renderer from "react-test-renderer";
 import ProfilePage from "../../../../main/app/view/pages/profile/profilePage";
-import { Typography } from "@mui/material";
 
 afterEach(() => {
     localStorage.removeItem("user");
@@ -10,13 +9,11 @@ afterEach(() => {
 
 it("Display error", () => {
     // Acts
-    const result = render(<ProfilePage/>)
-    render(<Typography variant="h1">
-            Accès refusé
-    </Typography>)
+    const operationResult = renderer.create(
+        <ProfilePage/>
+    ).toJSON()
 
     // Expects
-    console.log(result.container.firstChild?.contains(
-        null
-    ))
+    const id = (operationResult as renderer.ReactTestRendererJSON).props.id
+    expect(id).toBe('unauthorized')
 })

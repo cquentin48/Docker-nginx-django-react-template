@@ -47,6 +47,8 @@ CORS_ALLOWED_ORIGINS = load_env_var_list("CORS_ALLOWED_ORIGINS",'["http://0.0.0.
 
 CORS_ORIGIN_ALLOW_ALL = True
 
+CSRF_TRUSTED_ORIGINS = load_env_var_list("CSRF_TRUSTED_ORIGINS",'["http://localhost"]')
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -81,7 +83,8 @@ REST_FRAMEWORK = {
     # Use Django's standard `django.contrib.auth` permissions,
     # or allow read-only access for unauthenticated users.
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework_simplejwt.authentication.JWTAuthentication'
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
     ],
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticated',

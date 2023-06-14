@@ -2,7 +2,7 @@ from rest_framework import serializers
 from rest_framework import generics, status
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import AllowAny, IsAuthenticated
 
 from user_managment.views import format_http_prefix
 
@@ -14,6 +14,7 @@ class RegisterAPI(generics.GenericAPIView):
     """API View for registering a user
     """
     serializer_class = RegisterSerializer
+    permission_classes = [AllowAny]
 
     def post(self, request, *_, **__)->Response:
         """Post route managment

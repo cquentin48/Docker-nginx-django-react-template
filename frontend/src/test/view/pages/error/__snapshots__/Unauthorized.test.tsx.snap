@@ -1,7 +1,9 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Is login button correctly rendered 1`] = `
-<div>
+<div
+  id="unauthorized"
+>
   <h1
     className="MuiTypography-root MuiTypography-h1 css-o2w69a-MuiTypography-root"
   >

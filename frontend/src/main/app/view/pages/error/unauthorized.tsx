@@ -3,7 +3,7 @@ import React from "react"
 
 export default function Unauthorized (): JSX.Element {
     return (
-        <div>
+        <div id="unauthorized">
             <Typography variant="h1">
                 Accès refusé
             </Typography>

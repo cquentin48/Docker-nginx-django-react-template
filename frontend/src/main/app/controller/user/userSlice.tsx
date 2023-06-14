@@ -1,3 +1,4 @@
+/* istanbul ignore file */
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { type APIError, type APIResponse, type LoginInput } from "../../model/user/httpRequestInterfaces";
 

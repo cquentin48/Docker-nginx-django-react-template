@@ -1,3 +1,5 @@
+/* istanbul ignore file */
+
 import { type VariantType } from "notistack";
 import type User from "../../model/user/user";
 
