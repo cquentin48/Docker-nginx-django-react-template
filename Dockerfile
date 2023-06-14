@@ -34,6 +34,6 @@ EXPOSE 80
 
 WORKDIR /home/webApp
 
-ENV CI=true
+ENV CI=1
 
 CMD ["/bin/bash", "-c", "nginx -g \"daemon off;\""]
