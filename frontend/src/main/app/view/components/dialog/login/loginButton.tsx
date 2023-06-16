@@ -1,15 +1,15 @@
 import React from "react";
 import { Button } from "@mui/material";
 import { VpnKey } from "@mui/icons-material";
-import { type VariantType } from "notistack";
 import { ButtonDialogSX } from "../styles";
 
 import localizedStrings from "../../../../app/locale/locale";
 import { useLoginMutation } from "../../../../controller/user/userSlice";
-import { type APIResponse } from "../../../../model/user/httpRequestInterfaces";
 import UserFactory from "../../../../model/user/userFactory";
 import { isNotInContainer } from "../../../utils/utils";
 import NotificationBuilder from "../../../../app/notification/notificationBuilder";
+import LoginAction from "../../../../controller/actions/loginAction";
+import type MessageNotification from "../../../../app/notification/notification";
 
 interface LoginButtonProps {
     username: string
@@ -21,23 +21,16 @@ export const LoginButton = (props: LoginButtonProps): JSX.Element => {
     /* eslint-disable-next-line @typescript-eslint/no-unused-vars */
     const [login, { isLoading }] = useLoginMutation();
 
+    const updateAction = (result: string): void => {
+        const message = JSON.parse(result) as MessageNotification
+        NotificationBuilder.displayNotification(message.getMessage() as string, message.getSeverity())
+    }
+
     const handleLoginButton = async (props: LoginButtonProps): Promise<void> => {
         const loginInput = { username: props.username, password: props.password }
         const result = await login(loginInput).unwrap()
-
-        let message;
-        let severity: VariantType;
-        if ('detail' in result) {
-            message = localizedStrings.FAILED_LOGIN
-            severity = "error"
-        } else {
-            const data: APIResponse = result;
-            UserFactory.updateUser(data.access);
-            message = localizedStrings.SUCCESSFUL_LOGIN
-            severity = "success"
-        }
-
-        NotificationBuilder.displayNotification(message, severity);
+        const action = new LoginAction(updateAction);
+        action.act(JSON.stringify(result));
 
         /* istanbul ignore next */
         if ('access' in result) {

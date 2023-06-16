@@ -19,7 +19,7 @@ COPY ./ /app
 
 EXPOSE 8000
 
-RUN apt-get update && apt-get install -y netcat
+RUN apt-get update && apt-get install -y netcat-traditional
 
 RUN make install
 

@@ -1,12 +1,16 @@
-import React from "react"
+import React from "react";
 
 import { testIgnoredInNoContainer } from "../../../utils"
 import { LoginButton } from "../../../../main/app/view/components/dialog/login/loginButton"
-import { fireEvent, render, screen } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import { Provider } from "react-redux";
 import renderer from "react-test-renderer";
 import { store } from "../../../../main/app/controller/store";
 import axios from "axios";
+
+afterEach(() => {
+    localStorage.removeItem("user")
+})
 
 test("Is login button correctly rendered", () => {
     // Given
@@ -40,6 +44,7 @@ testIgnoredInNoContainer("Login button with correct inputs", () => {
         first_name: "F.",
         last_name: "L."
     }).then(result => {
+        console.log(result);
         // Given
         const inputs = {
             username: "myUser",
@@ -58,12 +63,13 @@ testIgnoredInNoContainer("Login button with correct inputs", () => {
             </Provider>
         )
         const button = screen.getByRole('button')
-        fireEvent.click(button)
+        button.click();
 
         // Asserts
+        console.log(localStorage.getItem("user"))
         expect(localStorage.getItem("user")).not.toBe(null)
         expect(localStorage.getItem("user")).not.toBe(undefined)
     }).catch(_ => {
         fail("The login button should update the user!")
     })
-})
+});

@@ -1,3 +1,5 @@
+/* istanbul ignore file */
+
 export interface APIResponse {
     refresh: string
     access: string
