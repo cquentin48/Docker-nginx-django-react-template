@@ -29,7 +29,7 @@ test("getUser with undefined value in localStorage", () => {
 
 test("updateUserInContainer", () => {
     // Before
-    process.env.IS_IN_DOCKER_COMPOSE_MODE = "1"
+    process.env.REACT_APP_IS_IN_DOCKER_COMPOSE_MODE = "1"
 
     // Given
     const token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJ" +

@@ -5,5 +5,5 @@
  * @returns {boolean} whether the app is inside a docker container or not
  */
 export function isNotInContainer (): boolean {
-    return process.env.IS_IN_DOCKER_COMPOSE_MODE !== "1";
+    return process.env.REACT_APP_IS_IN_DOCKER_COMPOSE_MODE !== "1";
 }

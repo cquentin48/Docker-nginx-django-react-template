@@ -70,7 +70,10 @@ class App extends React.Component<{}, AppState> {
 
     render (): JSX.Element {
         return (
-            <div className="App">
+            <div className="App" style={{
+                height: "100%",
+                overflow: "hidden"
+            }}>
                 <Provider store={store}>
                     <SnackbarProvider maxSnack={4}>
                         <BrowserRouter>
@@ -79,7 +82,11 @@ class App extends React.Component<{}, AppState> {
                                     isConnected={UserFactory.fetchUser() !== undefined}
                                 />
                             </div>
-                            <div style={{ marginTop: 20 }}>
+                            <div style={{
+                                marginTop: 80,
+                                marginBottom: 50,
+                                height: "100%"
+                            }}>
                                 <WebAPPRouter />
                             </div>
                         </BrowserRouter>

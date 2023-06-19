@@ -14,6 +14,11 @@ export default function ProfileAction (props: ProfileActionProps): JSX.Element {
     return (
         <Card
             id={props.id}
+            sx={{
+                minWidth: 128,
+                maxWidth: 256,
+                height: 144
+            }}
         >
             <CardHeader
                 title={props.label}

@@ -69,7 +69,9 @@ class TopBar extends React.Component<TopBarProps, TopBarState> {
         return (
             <div>
                 <Box sx={{ flexGrow: 1 }}>
-                    <AppBar position="static">
+                    <AppBar
+                        position="fixed"
+                    >
                         <Toolbar sx={{ justifyContent: "space-between" }}>
                             <Drawer
                                 isUserConnected={props.isConnected}

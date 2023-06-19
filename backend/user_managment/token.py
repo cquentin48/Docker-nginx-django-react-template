@@ -17,8 +17,8 @@ class UserManagmentTokenObtainPairSerializer(TokenObtainPairSerializer):
         # pylint: disable=trailing-comma-tuple
         token['profilePicture'] = str(user.avatar_image),
         token['registrationDate'] = 0 if user.registration_date is None\
-            else user.registration_date.timestamp(),
-        token['lastLoginDate'] = 0 if user.last_login is None else user.last_login.timestamp()
+            else user.registration_date.timestamp()*1000,
+        token['lastLoginDate'] = 0 if user.last_login is None else user.last_login.timestamp()*1000
 
         return token
 

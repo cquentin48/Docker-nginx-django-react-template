@@ -1,5 +1,7 @@
 import LocalizedStrings from "react-localization";
 
+import yamlfile from '../../../res/locale/fr_FR.yaml';
+
 const localizedStrings = new LocalizedStrings({
     "en-US": {
         CHANGE_PASSWORD: "Change password",
@@ -65,9 +67,20 @@ export const formatDate = (timestampDate: number): string => {
     return localizedStrings.formatString(
         localizedStrings.DATE,
         (`0${date.getDate()}`).slice(-2),
-        (`0${date.getMonth()}`).slice(-2),
+        (`0${date.getMonth() + 1}`).slice(-2),
         date.getFullYear().toString()
     ) as string
+}
+
+export const loadYAMLLocaleFile = (): void => {
+    const reader = new FileReader()
+    console.log(yamlfile);
+    reader.onload = async (e) => {
+        const text = (e.target?.result)
+        console.log(text)
+        alert(text)
+    };
+    reader.readAsText(yamlfile)
 }
 
 export default localizedStrings;

@@ -15,7 +15,9 @@ export default function APPAvatar (props: AvatarProps): JSX.Element {
             alt={props.altText}
             sx={{
                 width: props.diameter,
-                height: props.diameter
+                height: props.diameter,
+                justifyContent: "center",
+                display: "flex"
             }}
         />
     } else {

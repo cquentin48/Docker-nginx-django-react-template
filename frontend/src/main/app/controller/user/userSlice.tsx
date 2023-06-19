@@ -22,3 +22,14 @@ export const api = createApi({
 export const {
     useLoginMutation
 } = api;
+
+const initialState = {
+
+}
+
+export const mockAPI = (state = initialState, action: string): void => {
+    switch (action) {
+        case "REGISTER_SUCCESS":
+            break;
+    }
+}

@@ -13,7 +13,31 @@ const profileActionList = [
     {
         id: 'delete-account',
         label: 'Delete',
-        description: 'Delete the account',
+        description: 'Delete the account. Any store data is removed!',
+        action: undefined
+    },
+    {
+        id: 'deactivate-account',
+        label: 'Deactivate',
+        description: 'Deactive the account. A mail will be sent on next login.',
+        action: undefined
+    },
+    {
+        id: 'update-username',
+        label: 'Update username',
+        description: 'Set new user name.',
+        action: undefined
+    },
+    {
+        id: 'update-email',
+        label: 'Update email',
+        description: 'Set new user email.',
+        action: undefined
+    },
+    {
+        id: 'update-password',
+        label: 'Update password',
+        description: 'Set new user password.',
         action: undefined
     }
 ]
@@ -30,16 +54,25 @@ export default function ProfileActionList (props: ProfileDateProps): JSX.Element
         >
             <Card
                 sx={{
-                    padding: "16px 0px 16px"
+                    padding: "16px 0px 16px",
+                    height: "86.5vh",
+                    width: "154vh",
+                    position: "fixed"
                 }}
             >
                 <CardHeader
                     title={localizedStrings.PROFILE_ACTIONS_HEADER}
+                    sx={{
+                        textAlign: "center"
+                    }}
                 />
                 <Box
-                    display="inline-block"
+                    display="grid"
                     justifyContent="center"
                     alignItems="center"
+                    width="100%"
+                    left="0"
+                    right="0"
                 >
                     <ProfileActionAccordion
                         id="userManagment"

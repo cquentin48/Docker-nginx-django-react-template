@@ -1,11 +1,9 @@
 import React from "react";
 
-import { ExpandMore } from "@mui/icons-material";
-import { Accordion, AccordionDetails, AccordionSummary, Button, Typography } from "@mui/material";
-import PopupState, { bindHover, bindPopover } from "material-ui-popup-state";
-import HoverPoper from "material-ui-popup-state/HoverPopover";
+import { Avatar, Card, CardContent, CardHeader, Grid } from "@mui/material";
 import ProfileAction from "./profileAction";
 import type User from "../../../../model/user/user";
+import { red } from "@mui/material/colors";
 
 interface SingleAction {
     id: string
@@ -25,19 +23,84 @@ interface ProfileActionAccordionProps {
 
 export default function ProfileActionAccordion (props: ProfileActionAccordionProps): JSX.Element {
     return (
+        <Grid
+            container
+            spacing={0}
+        >
+            <Grid
+                item
+                xs={12}
+                style={{
+                    paddingLeft: 0,
+                    paddingRight: 0,
+                    margin: 0
+                }}
+            >
+                <Card
+                    sx={{
+                        display: "block",
+                        margin: "16px 0px 0px",
+                        height: "auto",
+                        width: "77.5vw"
+                    }}
+                >
+                    <CardHeader
+                        avatar={
+                            <Avatar sx={{ bgcolor: red[500] }} aria-label="recipe">
+                                {props.startIcon}
+                            </Avatar>
+                        }
+                        title={props.ListLabel}
+                        subheader={props.ListHelper}
+                    />
+                    <CardContent>
+                        <Grid
+                            container
+                            spacing={2}
+                            justifyContent="left"
+                            marginLeft={2}
+                            marginRight={2}
+                        >
+                            {props.actionList.map((singleAction, _) => {
+                                return (
+                                    <Grid
+                                        item
+                                        sm={12}
+                                        md={6}
+                                        lg={2.5}
+                                        style={{
+                                            paddingLeft: 0,
+                                            paddingRight: 0,
+                                            margin: 0
+                                        }}
+                                        key={`grid-item-${singleAction.id}`}
+                                    >
+                                        <ProfileAction
+                                            key={singleAction.id}
+                                            description={singleAction.description}
+                                            id={singleAction.id}
+                                            label={singleAction.label}
+                                        />
+                                    </Grid>
+                                )
+                            })}
+                        </Grid>
+                    </CardContent>
+                </Card>
+            </Grid>
+        </Grid>
+    )
+}
+
+/*
+export default function ProfileActionAccordion (props: ProfileActionAccordionProps): JSX.Element {
+    return (
         <Accordion
-            sx={{
-                width: "100%",
-                flexGrow: "revert"
-            }}
         >
             <AccordionSummary
                 expandIcon={<ExpandMore/>}
                 aria-controls={`${props.id}-content`}
                 id={`${props.id}-header`}
-                sx={{
-                    flexGrow: "inherit"
-                }}
             >
                 <Typography>
                     {props.startIcon} {props.ListLabel}
@@ -83,3 +146,4 @@ export default function ProfileActionAccordion (props: ProfileActionAccordionPro
         </Accordion>
     )
 }
+*/

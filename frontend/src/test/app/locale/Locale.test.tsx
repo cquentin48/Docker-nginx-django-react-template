@@ -3,7 +3,7 @@ import localizedStrings, { formatDate, setLanguage } from "../../../main/app/app
 test("formatDate", () => {
     // Given
     const date = new Date(2016, 11, 17).getTime();
-    const expectedResult = "11/17/2016";
+    const expectedResult = "12/17/2016";
 
     // Acts
     const unitTestResult = formatDate(date);

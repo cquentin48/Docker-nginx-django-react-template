@@ -8,6 +8,7 @@ import UserFactory from "../../../model/user/userFactory";
 
 interface ProfilePageState {
     user?: User
+    selectedIDs: number[]
 }
 
 /* eslint-disable-next-line @typescript-eslint/no-empty-interface */
@@ -19,7 +20,8 @@ class ProfilePage extends React.Component<ProfilePageProps, ProfilePageState> {
     constructor (props: ProfilePageProps) {
         super(props);
         this.state = {
-            user: UserFactory.fetchUser() as User
+            user: UserFactory.fetchUser() as User,
+            selectedIDs: []
         }
     }
 
@@ -29,10 +31,15 @@ class ProfilePage extends React.Component<ProfilePageProps, ProfilePageState> {
             return (<Unauthorized/>)
         } else {
             return (
-                <Container maxWidth={false}>
+                <Container
+                    maxWidth={false}
+                    style={{
+                        height: "100%",
+                        overflow: "hidden"
+                    }}>
                     <Grid
                         container
-                        spacing={4}
+                        spacing={10}
                         direction="row"
                         justifyContent="center"
                         alignItems="stretch"
