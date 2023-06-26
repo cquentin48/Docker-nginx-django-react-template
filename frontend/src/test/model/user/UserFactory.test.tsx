@@ -13,6 +13,7 @@ afterEach(() => {
     } else {
         process.env.IS_IN_DOCKER_COMPOSE_MODE = "1";
     }
+    process.env.REACT_APP_IS_IN_DOCKER_COMPOSE_MODE = undefined
 })
 
 test("getUser with undefined value in localStorage", () => {
