@@ -1,3 +1,4 @@
+import datetime
 import django
 
 from django.db import models
@@ -140,6 +141,14 @@ class User(AbstractBaseUser):
         """
         return self.is_active
 
+    def update_user_online_status(self, new_status: bool):
+        """Update user status to be online or offline
+
+        Args:
+            new_status (bool): `True` online | `False` offline
+        """
+        self.is_currently_logged_in = new_status
+
     @property
     def is_admin(self) -> bool:
         """Check if user is admin or not
@@ -156,3 +165,40 @@ class User(AbstractBaseUser):
         status_code = status.HTTP_409_CONFLICT
         default_detail = LOCALE.load_localised_text("USER_REGISTER_USERNAME_ALREADY_TAKEN")
         default_code = "USER_REGISTER_USERNAME_ALREADY_TAKEN"
+
+class Token(models.Model):
+    """JWT Token connection stored in the server backend side
+    """
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    jti = models.CharField(max_length=32)
+    issued_at = models.DateField()
+    expires_at = models.DateField()
+
+    is_valid = models.BooleanField()
+
+    @staticmethod
+    def create_token(user_id:str, jti:str, issued_at:int, expires_at:int):
+        """Creates and store a token access inside the backend server side database
+
+        Args:
+            user_id (str): id of the currently login user
+            jti (str): id of the jwt token
+            issued_at (int): long format for the issued time token
+            expires_at (int): long format for the expires time token
+
+        Returns:
+            Token: Newly created token
+        """
+        user = User.objects.filter(id=user_id).first()
+        token:Token = Token.objects.create(
+            user = user,
+            jti = jti,
+            issued_at = datetime.datetime.fromtimestamp(issued_at),
+            expires_at = datetime.datetime.fromtimestamp(expires_at),
+            is_valid = True
+        )
+
+        return token
+
+    def __str__(self) -> str:
+        return str(self.user)+":"+str(self.jti)+":"+str(self.issued_at)+"-"+str(self.expires_at)

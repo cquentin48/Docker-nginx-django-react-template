@@ -84,8 +84,7 @@ REST_FRAMEWORK = {
     # Use Django's standard `django.contrib.auth` permissions,
     # or allow read-only access for unauthenticated users.
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
-        'rest_framework.authentication.SessionAuthentication',
+        'user_managment.authentication.UserAuthentication'
     ],
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticated',
@@ -162,7 +161,8 @@ AUTHENTICATION_BACKEND = [
 ]
 
 SIMPLE_JWT = {
-    'TOKEN_OBTAIN_SERIALIZER': "user_managment.token.UserManagmentTokenObtainPairSerializer",
+    'TOKEN_OBTAIN_SERIALIZER':
+        "user_managment.api.authenticate.UserManagmentTokenObtainPairSerializer",
     'ACCESS_TOKEN_LIFETIME': timedelta(hours=1),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=30),
     'UPDATE_LAST_LOGIN': True,

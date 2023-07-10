@@ -1,10 +1,21 @@
 from django.contrib.auth import get_user_model
 
-from rest_framework import serializers
+from rest_framework import generics, serializers, status
+from rest_framework.response import Response
+from rest_framework.permissions import AllowAny
 
 from server.settings import LOCALE
 
 User = get_user_model()
+
+class UserSerializer(serializers.ModelSerializer):
+    """Serializer class for the user response
+    """
+    class Meta:
+        """Meta subclass
+        """
+        model = User
+        fields = ['username','email']
 
 class RegisterSerializer(serializers.ModelSerializer):
     """Serializer class for registration
@@ -65,9 +76,9 @@ class RegisterSerializer(serializers.ModelSerializer):
         try:
             if len(user) != 0:
                 raise User.AlreadyExist(
-                    LOCALE.load_localised_text("USER_REGISTER_EMAIL_ALREADY_TAKEN")
+                    LOCALE.load_localised_text("USER_REGISTER_USERNAME_ALREADY_TAKEN")
                 )
-        except User.DoesNotExist:
+        except User.DoesNotExist: # pragma: no cover
             pass
 
     def check_if_user_already_exist(self, username):
@@ -85,7 +96,7 @@ class RegisterSerializer(serializers.ModelSerializer):
                 raise User.AlreadyExist(
                     LOCALE.load_localised_text("USER_REGISTER_USERNAME_ALREADY_TAKEN")
                 )
-        except User.DoesNotExist:
+        except User.DoesNotExist: # pragma: no cover
             pass
 
     def validate(self, attrs):
@@ -130,3 +141,56 @@ class RegisterSerializer(serializers.ModelSerializer):
         user.set_password(validated_data['password'])
         user.save()
         return user
+
+
+class RegisterAPI(generics.GenericAPIView):
+    """API View for registering a user
+    """
+    serializer_class = RegisterSerializer
+    permission_classes = [AllowAny]
+
+    # pragma: no cover
+    def post(self, request, *_, **__)->Response:
+        """Post route managment
+
+        Args:
+            `request` (_type_): request sent by the user
+
+        Returns:
+            Response: Response sent by the server to the user
+            - `201` : User created
+            - `400` : Bad inputs entered
+            - `409` : Conflict in username and/or email
+        """
+        try:
+            serializer = self.get_serializer(data=request.data)
+            serializer.is_valid(raise_exception=True)
+            user:User = serializer.create(serializer.validated_data)
+
+            return Response(
+            {
+                "user": UserSerializer(
+                    user,
+                    context=self.get_serializer_context()).data,
+                    "message":"User Created Successfully. Please perform "+
+                    "login."
+            },
+            status=status.HTTP_201_CREATED,
+            headers={
+                "Location":"http://0.0.0.0:8000/api/v1/user/"+user.username+"/profile"
+            }
+            )
+        except serializers.ValidationError as error:
+            return Response(
+                {
+                    "message":str(error.default_detail)
+                },
+                status=error.status_code
+            )
+        except User.AlreadyExist as error:
+            return Response(
+                {
+                    "message":str(error)
+                },
+                status=error.status_code,
+            )
