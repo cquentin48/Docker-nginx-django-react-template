@@ -38,7 +38,7 @@ class LogoutSerializerTestCase(TestCase):
         operation_result = test_serializer.fetch_token_data(access_token)
 
         # Asserts
-        self.assertEqual(operation_result['user_id'], 1)
+        self.assertEqual(operation_result['user_id'], user.id)
 
     def test_fetch_user_success(self):
         """
@@ -132,8 +132,10 @@ class LogoutSerializerTestCase(TestCase):
         self.assertEqual(operation_result.user, user)
         self.assertEqual(operation_result.jti, "1")
         self.assertEqual(operation_result.is_valid, True)
-        self.assertEqual(operation_result.issued_at,datetime.date(1970,1,1))
-        self.assertEqual(operation_result.expires_at,datetime.date(1970,1,1))
+        self.assertEqual(operation_result.issued_at,
+                         datetime.datetime(1970,1,1,0,0,1,tzinfo=datetime.timezone.utc))
+        self.assertEqual(operation_result.expires_at,
+                         datetime.datetime(1970,1,1,0,0,1,tzinfo=datetime.timezone.utc))
 
     def test_fetch_token_fails_exception(self):
         """
@@ -240,7 +242,8 @@ class LogoutSerializerTestCase(TestCase):
         self.assertEqual(operation_result['token'], token_object)
 
 class LogoutTestCase(TestCase):
-    """Unit test class for the logout
+    """
+    Unit test class for the logout
     `POST` method
     """
 

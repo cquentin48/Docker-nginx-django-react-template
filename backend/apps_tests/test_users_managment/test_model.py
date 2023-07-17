@@ -105,8 +105,8 @@ class ModelTest(TestCase):
         """
         # Given
         first_username = "username"
-        second_username = "username2"
         first_email="mail@mail.com"
+        second_username = "username2"
         second_email = "mail2@mail.com"
         password="mypassword!"
 
@@ -131,6 +131,54 @@ class ModelTest(TestCase):
         # Asserts
         self.assertEqual(first_operation_result, expected_outcome)
         self.assertEqual(second_operation_result, expected_outcome)
+
+    def test_has_module_perms_false(self):
+        """
+        Unit test method for the method `has_module_perm`
+        Expected result: `False`
+        """
+
+        # Given
+        module_label = "auth"
+        username = "username"
+        email = "mail@mail.com"
+        password = "password"
+        expected_result = False
+
+        user:User = User.create_user(username,email,password)
+
+        # Acts
+        operation_result = user.has_module_perms(module_label)
+
+        # Asserts
+        self.assertEqual(operation_result, expected_result)
+
+    def test_has_module_perms_true(self):
+        """
+        Unit test method for the method `has_module_perm`
+        Expected result: `False`
+        """
+
+        # Given
+        user_module_label = "test"
+        user_username = "username"
+        user_email = "mail@mail.com"
+        superuser_username = "super_username"
+        superuser_email = "supermail@mail.com"
+        superuser_label = "auth"
+        password = "password"
+        expected_result = True
+
+        user:User = User.create_user(user_username,user_email,password)
+        super_user:User = User.create_superuser(superuser_username,superuser_email,password)
+
+        # Acts
+        user_operation_result = user.has_module_perms(user_module_label)
+        superuser_operation_result = super_user.has_module_perms(superuser_label)
+
+        # Asserts
+        self.assertEqual(user_operation_result, expected_result)
+        self.assertEqual(superuser_operation_result, expected_result)
 
     def test_is_staff(self):
         """

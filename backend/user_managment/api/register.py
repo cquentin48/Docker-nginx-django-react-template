@@ -1,4 +1,5 @@
 from django.contrib.auth import get_user_model
+from drf_yasg.utils import swagger_auto_schema
 
 from rest_framework import generics, serializers, status
 from rest_framework.response import Response
@@ -133,13 +134,11 @@ class RegisterSerializer(serializers.ModelSerializer):
             _type_: _description_
         """
         self.check_if_user_already_exist(validated_data["username"])
-        user = User.objects.create(
-            username=validated_data['username'],
-            email=validated_data['email']
+        user = User.create_user(
+            validated_data['username'],
+            validated_data['email'],
+            validated_data['password']
         )
-        user.is_active = True
-        user.set_password(validated_data['password'])
-        user.save()
         return user
 
 
@@ -149,7 +148,7 @@ class RegisterAPI(generics.GenericAPIView):
     serializer_class = RegisterSerializer
     permission_classes = [AllowAny]
 
-    # pragma: no cover
+    @swagger_auto_schema(operation_description="User account creation")
     def post(self, request, *_, **__)->Response:
         """Post route managment
 

@@ -1,6 +1,7 @@
+from drf_yasg.utils import swagger_auto_schema
+
 from rest_framework import generics, serializers, status
 from rest_framework.authentication import SessionAuthentication
-from rest_framework.authtoken.models import Token
 from rest_framework.exceptions import NotAuthenticated, PermissionDenied
 from rest_framework.request import Request
 from rest_framework.response import Response
@@ -49,19 +50,6 @@ class ProfileAPI(generics.GenericAPIView):
     serializer_class = UserProfileSerializer
     permission_classes = [IsAuthenticated]
     authentication_classes = (JWTAuthentication, SessionAuthentication)
-
-    def is_logged_in(self, user:User):
-        """Check if the user has a correct login token
-
-        Args:
-            user (User): current logged-in? user
-
-        Raises:
-            NotAuthenticated: when the user is not authenticated
-        """
-        correct_usertoken = Token.objects.filter(user=user).exists()
-        if not correct_usertoken:
-            raise NotAuthenticated("User not authenticated for this action!")
 
     def fetch_profile(self, user:User, serializer_context:dict[str]) ->\
         UserProfileSerializer|StaffProfileSerializer:
@@ -120,6 +108,7 @@ class ProfileAPI(generics.GenericAPIView):
                 }
             }
 
+    @swagger_auto_schema(operation_description="User profile")
     def get(self,request:Request, *_, **kwargs)->Response:
         """Get method for this route
 

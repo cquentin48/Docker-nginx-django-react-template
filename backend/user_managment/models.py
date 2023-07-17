@@ -1,10 +1,12 @@
-import datetime
+from datetime import datetime
 import django
 
 from django.db import models
 from django.contrib.auth.models import(
-    AbstractBaseUser
+    AbstractBaseUser, update_last_login
 )
+from django.utils.timezone import make_aware
+import pytz
 
 from rest_framework import status
 from rest_framework.exceptions import APIException
@@ -70,7 +72,7 @@ class User(AbstractBaseUser):
             password=password,
             admin=True,
             staff=True,
-            is_active=True
+            is_active=True,
         )
         user.save()
 
@@ -94,6 +96,33 @@ class User(AbstractBaseUser):
 
     def __str__(self) -> str:
         return self.username
+
+    def update_last_login(self):
+        """Update the user last login date
+        """
+        update_last_login(None,self)
+
+    @staticmethod
+    def create_user(username:str, email:str, password:str):
+        """Creates a normal user and returns it
+
+        Args:
+            username (str): username entered
+            email (str): user email entered
+            password (str): user password entered
+
+        Returns:
+            `User`: Newly created user
+        """
+        user = User.objects.create(
+            username=username,
+            email=email
+        )
+        user.is_active = True
+        user.set_password(password)
+        user.last_login = make_aware(datetime(1970,1,1),timezone=pytz.UTC)
+        user.save()
+        return user
 
     def has_perm(self, perm: str, _=None) -> bool:
         """Check if the user can access a part of an app or not
@@ -148,6 +177,7 @@ class User(AbstractBaseUser):
             new_status (bool): `True` online | `False` offline
         """
         self.is_currently_logged_in = new_status
+        self.save()
 
     @property
     def is_admin(self) -> bool:
@@ -171,8 +201,12 @@ class Token(models.Model):
     """
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     jti = models.CharField(max_length=32)
-    issued_at = models.DateField()
-    expires_at = models.DateField()
+    issued_at = models.DateTimeField(
+        default=django.utils.timezone.now
+    )
+    expires_at = models.DateTimeField(
+        default=django.utils.timezone.now
+    )
 
     is_valid = models.BooleanField()
 
@@ -190,11 +224,14 @@ class Token(models.Model):
             Token: Newly created token
         """
         user = User.objects.filter(id=user_id).first()
+        date_issued_at = make_aware(datetime.fromtimestamp(issued_at),timezone=pytz.UTC)
+        date_expires_at = make_aware(datetime.fromtimestamp(expires_at), timezone=pytz.UTC)
+
         token:Token = Token.objects.create(
             user = user,
             jti = jti,
-            issued_at = datetime.datetime.fromtimestamp(issued_at),
-            expires_at = datetime.datetime.fromtimestamp(expires_at),
+            issued_at = date_issued_at,
+            expires_at = date_expires_at,
             is_valid = True
         )
 

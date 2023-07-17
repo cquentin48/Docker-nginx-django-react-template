@@ -1,12 +1,13 @@
+from drf_yasg.utils import swagger_auto_schema
+
 from rest_framework import status
-from rest_framework.exceptions import ValidationError
+from rest_framework.exceptions import AuthenticationFailed, ValidationError
 from rest_framework.response import Response
 
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
 
 from server.settings import LOCALE
-
 from user_managment.models import User, Token
 
 # pylint: disable=abstract-method
@@ -27,40 +28,65 @@ class UserManagmentTokenObtainPairSerializer(TokenObtainPairSerializer):
         if not value:
             raise ValidationError(LOCALE.load_localised_text(error_label))
 
-    def validate(self, attrs):
-        data = super().validate(attrs)
-        refresh = self.get_token(self.user)
-        username = attrs['username']
-        password = attrs['password']
+    def validate_user(self,
+                      user: User,
+                      username:str,
+                      password:str,
+                      refresh) -> dict[str]:
+        """Check if the user exists and return the corresponding data
+        as a dict
 
-        self.is_input_filled(username,"LOGIN_USERNAME_EMPTY")
-        self.is_input_filled(password,"LOGIN_PASSWORD_EMPTY")
-        user: User = User.objects.get(username=attrs['username'])
-        if user:
-            if not user.check_password(password):
-                raise User.DoesNotExist(
-                    LOCALE.load_localised_text("LOGIN_FAIL_USERNAME_PASSWORD_NO_MATCH")
-                )
-            data['username'] = attrs['username']
-            data['access'] = refresh.access_token
-            data['refresh'] = refresh
-            return data
-        raise User.DoesNotExist(
-            LOCALE.load_localised_text("LOGIN_FAIL_USERNAME_PASSWORD_NO_MATCH")
-        )
+        Args:
+            user (User): fetched user
+            username (str): username entered
+            password (str): password entered
+            data (dict[str]): request input data
+            refresh (_type_): refresh access token
+
+        Raises:
+            User.DoesNotExist: If the password entered doesn't correspond
+            to the one in the database
+
+        Returns:
+            dict[str]: request output data
+        """
+        data = {}
+        if not user.check_password(password):
+            raise User.DoesNotExist(
+                LOCALE.load_localised_text("LOGIN_FAIL_USERNAME_PASSWORD_NO_MATCH")
+            )
+        data['username'] = username
+        data['access'] = refresh.access_token
+        data['refresh'] = refresh
+        return data
+
+    def validate(self, attrs):
+        try:
+            super().validate(attrs)
+            username = attrs['username']
+            password = attrs['password']
+
+            self.is_input_filled(username,"LOGIN_USERNAME_EMPTY")
+            self.is_input_filled(password,"LOGIN_PASSWORD_EMPTY")
+            user = User.objects.filter(username=attrs['username'])
+            refresh = self.get_token(user.first())
+            return self.validate_user(user.first(),username,password,refresh)
+        except AuthenticationFailed as exception:
+            raise User.DoesNotExist(
+                LOCALE.load_localised_text("LOGIN_FAIL_USERNAME_PASSWORD_NO_MATCH")
+            ) from exception
+
 
     @classmethod
     def get_token(cls, user:User):
         token = super().get_token(user)
         token['username'] = user.username
         token['email'] = user.email
-        # pylint: disable=trailing-comma-tuple
-        token['isAdmin'] = str(user.is_admin),
-        # pylint: disable=trailing-comma-tuple
-        token['profilePicture'] = str(user.avatar_image),
+        token['isAdmin'] = str(user.is_admin)
+        token['profilePicture'] = str(user.avatar_image)
         token['registrationDate'] = 0 if user.registration_date is None\
-            else user.registration_date.timestamp()*1000,
-        token['lastLoginDate'] = 0 if user.last_login is None else user.last_login.timestamp()*1000
+            else user.registration_date.timestamp()
+        token['lastLoginDate'] = 0 if user.last_login is None else user.last_login.timestamp()
 
         return token
 
@@ -69,6 +95,16 @@ class UserManagmentTokenObtainPairView(TokenObtainPairView):
     """
     serializer_class=UserManagmentTokenObtainPairSerializer
 
+    def update_user_model(self, user: User):
+        """Update the user data
+
+        Args:
+            user (User): newly logged-in user
+        """
+        user.update_last_login()
+        user.update_user_online_status(True)
+
+    @swagger_auto_schema(operation_description="User authentication")
     def post(self, request, *args, **kwargs):
         """HTTP Post request method
         """
@@ -76,24 +112,24 @@ class UserManagmentTokenObtainPairView(TokenObtainPairView):
             serializer = self.get_serializer(data=request.data)
             data = serializer.validate(request.data)
             Token.create_token(
-                data['refresh']['user_id'],
-                data['refresh']['jti'],
-                data['refresh']['iat'],
-                data['refresh']['exp']
+                data['access']['user_id'],
+                data['access']['jti'],
+                data['access']['iat'],
+                data['access']['exp']
             )
             user:User = User.objects.filter(username=data['username']).first()
-            user.update_user_online_status(True)
+            self.update_user_model(user)
             return Response(
                 {
-                    'access':str(data['refresh']),
-                    'refresh':str(data['access'])
+                    'access':str(data['access']),
+                    'refresh':str(data['refresh'])
                 },
                 status=status.HTTP_200_OK
             )
         except ValidationError as exception:
             return Response({
                 "message":exception.default_detail
-            },status=exception.default_code)
+            },status=status.HTTP_400_BAD_REQUEST)
         except User.DoesNotExist as exception:
             return Response({
                 "message":str(exception)

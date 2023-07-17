@@ -1,6 +1,6 @@
-## Install requirements from 'requirements.txt' file
+## Install requirements from 'setup.py' python file
 install:
-	pip install -r requirements.txt
+	pip install -e .[dev]
 
 ## Activate venv shell
 shell:
