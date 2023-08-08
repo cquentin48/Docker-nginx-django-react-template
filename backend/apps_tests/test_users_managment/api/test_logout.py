@@ -1,4 +1,5 @@
 import datetime
+from apps_tests.test_users_managment.api.utils.session import authenticate, register
 from django.test import TestCase
 from django.urls import reverse
 
@@ -269,38 +270,23 @@ class LogoutTestCase(TestCase):
         # Given
         username = "username"
         password = "password"
-        email = "email@mail.com"
+        email = "email@email.com"
         url = reverse("logout")
 
-        register_serializer = RegisterSerializer()
-        logout_serializer = LogoutSerializer()
-
-        # Before Acts
-        user: User = register_serializer.create({
-            'username':username,
-            'password':password,
-            'email':email
-        })
-        token:RefreshToken = UserManagmentTokenObtainPairSerializer.get_token(user)
-        token_data = logout_serializer.fetch_token_data(str(token))
-        token_object = Token.create_token(
-            user.id,
-            token_data['jti'],
-            1,
-            1
-        )
-        token_object.save()
+        register(username, password, email)
+        access_token = authenticate(username, password)
 
         # Acts
-        self.factory.credentials(HTTP_AUTHORIZATION="Bearer "+str(token))
+        self.factory.credentials(HTTP_AUTHORIZATION="Bearer "+str(access_token))
         response = self.factory.post(
             url,
             {},
             format="json"
         )
+        user = User.objects.get(username=username)
 
         # Asserts
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json(), {"message":"Successful logout!"})
         self.assertEqual(user.is_currently_logged_in, False)
-        self.assertFalse(Token.objects.filter(jti=token_data["jti"]).exists(),False)
+        self.assertEqual(len(Token.objects.all()),0)

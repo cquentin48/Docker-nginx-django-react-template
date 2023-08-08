@@ -1,13 +1,10 @@
 from drf_yasg.utils import swagger_auto_schema
 
 from rest_framework import generics, serializers, status
-from rest_framework.authentication import SessionAuthentication
-from rest_framework.exceptions import NotAuthenticated, PermissionDenied
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
-
-from rest_framework_simplejwt.authentication import JWTAuthentication
+from server.settings import LOCALE
 
 from user_managment.views import format_http_prefix
 
@@ -49,9 +46,19 @@ class ProfileAPI(generics.GenericAPIView):
     """
     serializer_class = UserProfileSerializer
     permission_classes = [IsAuthenticated]
-    authentication_classes = (JWTAuthentication, SessionAuthentication)
 
-    def fetch_profile(self, user:User, serializer_context:dict[str]) ->\
+    def is_super_user(self, user:User) -> bool:
+        """
+        Check if the user is super admin user or not
+        Args:
+            user (User): Selected user
+
+        Returns:
+            bool: `True` yes | `False` no
+        """
+        return user.is_staff or user.is_admin
+
+    def fetch_profile(self, username:str, serializer_context:dict[str]) ->\
         UserProfileSerializer|StaffProfileSerializer:
         """Fetch the profile and returns it in a serializer form
 
@@ -70,7 +77,8 @@ class ProfileAPI(generics.GenericAPIView):
             UserProfileSerializer|UserStaffProfileSerializer:
                 Profile serialized for the http response
         """
-        if user.is_admin or user.is_staff:
+        user = User.objects.get(username=username)
+        if self.is_super_user(user):
             return StaffProfileSerializer(
                 user,
                 context=serializer_context).data
@@ -122,20 +130,24 @@ class ProfileAPI(generics.GenericAPIView):
             - `403` : Unsufficient authorization to retrieve profile
         """
         try:
+            username = kwargs['username']
+            profile = self.fetch_profile(
+                username,
+                self.get_serializer_context()
+            )
             response_object = self.generate_profile_index_array(
                 request.get_host(),
                 request.is_secure(),
-                kwargs['username'],
-                self.fetch_profile(request.user,self.get_serializer_context())
+                username,
+                profile
             )
             return Response(
-                response_object
-                ,status=status.HTTP_200_OK)
-        except NotAuthenticated as exception:
-            return Response({
-                "message":str(exception)
-            }, status=exception.status_code)
-        except PermissionDenied as exception:
-            return Response({
-                "message":str(exception)
-            },status=exception.status_code)
+                response_object,
+                status=status.HTTP_200_OK)
+        except User.DoesNotExist as _:
+            return Response(
+                {
+                    'message':LOCALE.load_localised_text("PROFILE_UNKOWN_USER")
+                },
+                status=status.HTTP_404_NOT_FOUND
+            )

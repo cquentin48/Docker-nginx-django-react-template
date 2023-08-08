@@ -26,7 +26,7 @@ from drf_yasg import openapi
 from . import settings
 
 
-schema_view = get_schema_view( # pylint: disable=invalid-name
+SchemaView = get_schema_view( # pylint: disable=invalid-name
    openapi.Info(
       title="Snippets API",
       default_version='v1',
@@ -41,15 +41,15 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/v1/auth/', include('rest_framework.urls')),
     re_path(r'^swagger(?P<format>\.json|\.yaml)$',
-        schema_view.without_ui(cache_timeout=0), name='schema-json'),
+        SchemaView.without_ui(cache_timeout=0), name='schema-json'),
     re_path(r'^swagger/$',
-        schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
+        SchemaView.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
     re_path(r'^redoc/$',
-        schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
+        SchemaView.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
     path('api/v1/data/',include('data.urls')),
     path('api/v1/user/',include('user_managment.urls')),
 ]
 
-if settings.DEBUG:
+if settings.DEBUG: # pragma: no cover
     urlpatterns = urlpatterns + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
     urlpatterns = urlpatterns + static(settings.MEDIA_URL, document_root=settings.STATIC_ROOT)

@@ -23,3 +23,5 @@ LOGIN_FAIL_USERNAME_PASSWORD_NO_MATCH: "Le pseudonyme et le mot de passe entré 
 LOGOUT_USER_NOT_LOGGED_IN: "Aucun utilisateur connecté!"
 LOGOUT_OUT_SUCCESS: "Déconnexion réussie!"
 LOGOUT_TOKEN_UNKNOWN: "Session inconnue!"
+DELETE_ACCOUNT_SUCCESS: "Compte supprimé!"
+PROFILE_UNKOWN_USER: "Utilisateur inconnu!"

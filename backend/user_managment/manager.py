@@ -50,25 +50,3 @@ class UserManager(BaseUserManager):
         user.save(using=self._db)
 
         return user
-
-    def create_superuser(self, username: str, email: str, password: str):
-        """Create a superuser for usages inside the admin
-        panel
-
-        Args:
-            username (str): username entered by the user
-            email (str): email entered by the user
-            password (str, optional): Password entered by the user. Defaults to None.
-
-        Returns:
-            User: Created superuser
-        """
-        user = self.create_user(
-            username=username,
-            email=email,
-            password=password,
-        )
-        user.staff = True
-        user.admin = True
-        user.save(using=self._db)
-        return user

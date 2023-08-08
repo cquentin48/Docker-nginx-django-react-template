@@ -3,6 +3,7 @@ from django.urls import path
 from rest_framework_simplejwt.views import (
     TokenRefreshView,
 )
+from user_managment.api.delete_account import AccountDelete
 
 from .api.logout import Logout
 from .api.register import RegisterAPI
@@ -22,5 +23,6 @@ urlpatterns = [
     path('auth', UserManagmentTokenObtainPairView.as_view(),name="authentication"),
     path('auth/refresh', TokenRefreshView.as_view(),name="token_refresh"),
     path('<str:username>/profile',ProfileAPI.as_view(),name="profile_view"),
-    path('logout', Logout.as_view(), name="logout")
+    path('logout', Logout.as_view(), name="logout"),
+    path('delete', AccountDelete.as_view(), name="account_delete")
 ]

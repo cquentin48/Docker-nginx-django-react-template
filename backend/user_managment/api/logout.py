@@ -3,6 +3,7 @@ import jwt
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import generics, serializers, status
 from rest_framework.exceptions import ValidationError
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
 
@@ -89,7 +90,7 @@ class Logout(generics.GenericAPIView):
     """Logout API view
     """
     serializer_class = LogoutSerializer
-    permission_classes = []
+    permission_classes = [IsAuthenticated]
 
     @swagger_auto_schema(operation_description="End of user session")
     def post(self, request:Request , *_ , **kwargs):
