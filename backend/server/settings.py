@@ -130,7 +130,7 @@ DATABASES = {
         'NAME':os.environ.get("POSTGRES_NAME","backend_db"),
         'ENGINE':os.environ.get("POSTGRES_ENGINE","django.db.backends.postgresql"),
         'USER':os.environ.get("POSTGRES_USER","backend"),
-        'PASSWORD':os.environ.get("POSTGRES_PASSWORD","Quen7tin."),
+        'PASSWORD':os.environ.get("POSTGRES_PASSWORD","MyPassword!."),
     }
 }
 
