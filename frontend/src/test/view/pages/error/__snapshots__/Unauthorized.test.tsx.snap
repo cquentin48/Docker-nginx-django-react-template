@@ -1,0 +1,14 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Is login button correctly rendered 1`] = `
+<div
+  id="unauthorized"
+>
+  <h1
+    className="MuiTypography-root MuiTypography-h1 css-o2w69a-MuiTypography-root"
+  >
+    Accès refusé
+  </h1>
+  Une authentification est nécessaire pour se connecter!
+</div>
+`;

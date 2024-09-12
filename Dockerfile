@@ -8,6 +8,10 @@ RUN npm install
 
 COPY frontend/ ./
 
+ARG REACT_APP_IS_IN_DOCKER_COMPOSE_MODE
+
+ENV REACT_APP_IS_IN_DOCKER_COMPOSE_MODE $REACT_APP_IS_IN_DOCKER_COMPOSE_MODE
+
 RUN npm run build
 
 FROM nginx:latest
@@ -20,8 +24,20 @@ COPY --from=builder /app/build /usr/share/nginx/html
 
 WORKDIR /usr/share/nginx/html
 
+RUN mkdir -p /usr/share/nginx/html/static/locale
+
+RUN apt update -y
+
+RUN apt install npm -y
+
+COPY --from=builder /app/ /home/webApp
+
+COPY --from=builder /app/src/main/res/locale /usr/share/nginx/html/static/locale
+
 EXPOSE 80
 
-WORKDIR /var/log/nginx
+WORKDIR /home/webApp
+
+ENV CI=1
 
 CMD ["/bin/bash", "-c", "nginx -g \"daemon off;\""]
