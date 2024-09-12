@@ -8,6 +8,7 @@ coreapi==2.3.3
 coreschema==0.0.4
 coverage==7.2.0
 cryptography==40.0.1
+debugpy==1.6.7
 defusedxml==0.7.1
 dill==0.3.6
 dj-rest-auth==3.0.0
@@ -62,3 +63,6 @@ uritemplate==4.1.1
 urllib3==1.26.14
 whitenoise==6.4.0
 wrapt==1.14.1
+
+[dev]
+freezegun

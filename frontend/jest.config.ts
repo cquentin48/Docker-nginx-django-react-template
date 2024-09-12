@@ -4,4 +4,8 @@ export default {
     clearMocks: true,
     collectCoverage: true,
     coverageDirectory: "coverage",
+    coverageReporters: ['json','html'],
+    collectCoverageFrom: [
+      'src/main/app/**/*.tsx'
+    ]
   }

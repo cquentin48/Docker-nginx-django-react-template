@@ -1,15 +1,29 @@
-import React from 'react';
-import { render, screen } from '@testing-library/react';
-import App from '../main/app/App';
+import React from "react";
+import { render } from "@testing-library/react";
+import App from "../main/app/App";
+import renderer from "react-test-renderer";
 
-test('renders learn react link', () => {
-  render(<App />);
-  const linkElement = screen.getByText(/learn react/i);
-  expect(linkElement).toBeInTheDocument();
+test("Is App component is correctly rendered", () => {
+    // Acts
+    const tree = renderer.create(<App/>).toJSON();
+
+    // Asserts
+    expect(tree).toMatchSnapshot();
 });
 
-test('Image is correctly rendered', async () => {
-  const renderedPage = render(<App />);
-  const element = renderedPage.container.querySelector('#appLogo');
-  expect(element?.getAttribute('src')).toBe('logo.svg');
+test("App component static methods", () => {
+    // Acts
+    render(<App />);
+
+    // Expects
+    expect(App.displayNotification != null);
+    expect(App.isComponentReady != null);
+});
+
+test("Is App Component Ready", () => {
+    // Acts
+    render(<App />);
+
+    // Expects
+    expect(App.isComponentReady()).toBe(true);
 });

@@ -21,12 +21,30 @@ module.exports = {
     project: ["tsconfig.json"]
   },
   plugins: [
-    'react'
+    'react',
   ],
   rules: {
     '@typescript-eslint/quotes':'off',
     '@typescript-eslint/semi':'off',
-    "@typescript-eslint/explicit-function-return-type": "off"
+    '@typescript-eslint/no-extraneous-class':'off',
+    '@typescript-eslint/no-misused-promises':'off',
+    'indent':'off',
+    "@typescript-eslint/ban-types": [
+      "error",
+      {
+        "extendDefaults": true,
+        "types": {
+          "{}": false
+        }
+      }
+    ],
+    "@typescript-eslint/indent": [
+      "error",
+      4,
+      {
+        "SwitchCase": 1
+      }
+    ]
   },
   settings: {
     react: {
